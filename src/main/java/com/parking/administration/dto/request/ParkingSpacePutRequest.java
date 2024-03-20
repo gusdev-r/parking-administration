@@ -1,63 +1,33 @@
-package com.parking.administration.demo.domain;
+package com.parking.administration.dto.request;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "tb_parking_spaces")
-public class ParkingSpace implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @Column(name = "condominium_block", nullable = false, length = 40)
+public class ParkingSpacePutRequest {
+    @NotBlank
     private String condominiumBlock;
 
-    @Column(name = "condominium_apartment",nullable = false, length = 40)
+    @NotBlank
     private String condominiumApartment;
 
-    @Column(name = "vehicle_brand",nullable = false, length = 70)
+    @NotBlank
     private String vehicleBrand;
 
-    @Column(name = "vehicle_model",nullable = false, length = 70)
+    @NotBlank
     private String vehicleModel;
 
-    @Column(name = "vehicle_color",nullable = false, length = 70)
+    @NotBlank
     private String vehicleColor;
-
-    @Column(name = "created_at",nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Column(name = "responsible_vehicle_name",nullable = false, length = 140)
+    @NotBlank
     private String responsibleVehicleName;
 
-    @Column(name = "vehicle_space_number",nullable = false, unique = true, length = 10)
+    @NotBlank
     private String vehicleSpaceNumber;
 
-    @Column(name = "vehicle_license_plate_number",nullable = false, unique = true, length = 7)
-    @Size(max = 7)
+    @NotBlank
     private String vehicleLicensePlateNumber;
 
-    @OneToOne
-    @JoinColumn(name = "vehicle_id")
-    private Vehicle vehicle;
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
-
-    public ParkingSpace() {
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
     public String getCondominiumBlock() {
         return condominiumBlock;
     }
@@ -98,14 +68,6 @@ public class ParkingSpace implements Serializable {
         this.vehicleColor = vehicleColor;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getResponsibleVehicleName() {
         return responsibleVehicleName;
     }
@@ -129,16 +91,16 @@ public class ParkingSpace implements Serializable {
     public void setVehicleLicensePlateNumber(String vehicleLicensePlateNumber) {
         this.vehicleLicensePlateNumber = vehicleLicensePlateNumber;
     }
-    private ParkingSpace(String condominiumBlock, String condominiumApartment, String vehicleBrand, String vehicleModel,
-                         String vehicleColor, LocalDateTime createdAt, Long id, String responsibleVehicleName,
-                         String vehicleSpaceNumber, String vehicleLicensePlateNumber) {
+
+    // Construtor privado para uso interno pelo Builder
+    private ParkingSpacePutRequest(String condominiumBlock, String condominiumApartment, String vehicleBrand,
+                                   String vehicleModel, String vehicleColor, String responsibleVehicleName,
+                                   String vehicleSpaceNumber, String vehicleLicensePlateNumber) {
         this.condominiumBlock = condominiumBlock;
         this.condominiumApartment = condominiumApartment;
         this.vehicleBrand = vehicleBrand;
         this.vehicleModel = vehicleModel;
         this.vehicleColor = vehicleColor;
-        this.createdAt = createdAt;
-        this.id = id;
         this.responsibleVehicleName = responsibleVehicleName;
         this.vehicleSpaceNumber = vehicleSpaceNumber;
         this.vehicleLicensePlateNumber = vehicleLicensePlateNumber;
@@ -146,79 +108,68 @@ public class ParkingSpace implements Serializable {
 
     // Getters
 
-    public static ParkingSpaceBuilder builder() {
-        return new ParkingSpaceBuilder();
+    public static ParkingSpacePutRequestBuilder builder() {
+        return new ParkingSpacePutRequestBuilder();
     }
 
-    public static class ParkingSpaceBuilder {
+    public static class ParkingSpacePutRequestBuilder {
         private String condominiumBlock;
         private String condominiumApartment;
         private String vehicleBrand;
         private String vehicleModel;
         private String vehicleColor;
-        private LocalDateTime createdAt = LocalDateTime.now();
-        private Long id;
         private String responsibleVehicleName;
         private String vehicleSpaceNumber;
         private String vehicleLicensePlateNumber;
 
-        private ParkingSpaceBuilder() {
+        private ParkingSpacePutRequestBuilder() {
 
         }
 
-        public ParkingSpaceBuilder condominiumBlock(String condominiumBlock) {
+        public ParkingSpacePutRequestBuilder condominiumBlock(String condominiumBlock) {
             this.condominiumBlock = condominiumBlock;
             return this;
         }
 
-        public ParkingSpaceBuilder condominiumApartment(String condominiumApartment) {
+        public ParkingSpacePutRequestBuilder condominiumApartment(String condominiumApartment) {
             this.condominiumApartment = condominiumApartment;
             return this;
         }
 
-        public ParkingSpaceBuilder vehicleBrand(String vehicleBrand) {
+        public ParkingSpacePutRequestBuilder vehicleBrand(String vehicleBrand) {
             this.vehicleBrand = vehicleBrand;
             return this;
         }
 
-        public ParkingSpaceBuilder vehicleModel(String vehicleModel) {
+        public ParkingSpacePutRequestBuilder vehicleModel(String vehicleModel) {
             this.vehicleModel = vehicleModel;
             return this;
         }
 
-        public ParkingSpaceBuilder vehicleColor(String vehicleColor) {
+        public ParkingSpacePutRequestBuilder vehicleColor(String vehicleColor) {
             this.vehicleColor = vehicleColor;
             return this;
         }
 
-        public ParkingSpaceBuilder createdAt(LocalDateTime createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        public ParkingSpaceBuilder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public ParkingSpaceBuilder responsibleVehicleName(String responsibleVehicleName) {
+        public ParkingSpacePutRequestBuilder responsibleVehicleName(String responsibleVehicleName) {
             this.responsibleVehicleName = responsibleVehicleName;
             return this;
         }
 
-        public ParkingSpaceBuilder vehicleSpaceNumber(String vehicleSpaceNumber) {
+        public ParkingSpacePutRequestBuilder vehicleSpaceNumber(String vehicleSpaceNumber) {
             this.vehicleSpaceNumber = vehicleSpaceNumber;
             return this;
         }
 
-        public ParkingSpaceBuilder vehicleLicensePlateNumber(String vehicleLicensePlateNumber) {
+        public ParkingSpacePutRequestBuilder vehicleLicensePlateNumber(String vehicleLicensePlateNumber) {
             this.vehicleLicensePlateNumber = vehicleLicensePlateNumber;
             return this;
         }
 
-        public ParkingSpace build() {
-            return new ParkingSpace(condominiumBlock, condominiumApartment, vehicleBrand, vehicleModel,
-                    vehicleColor, createdAt, id, responsibleVehicleName, vehicleSpaceNumber, vehicleLicensePlateNumber);
+        public ParkingSpacePutRequest build() {
+            return new ParkingSpacePutRequest(condominiumBlock, condominiumApartment, vehicleBrand,
+                    vehicleModel, vehicleColor, responsibleVehicleName, vehicleSpaceNumber,
+                    vehicleLicensePlateNumber);
         }
     }
 }

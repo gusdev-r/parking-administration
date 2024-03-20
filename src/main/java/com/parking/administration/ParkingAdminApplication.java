@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.RestController;
 
 @EnableAutoConfiguration
-@EnableJpaRepositories("com.parking.administration.demo.repository.ParkingSpaceRepository")
+@EnableJpaRepositories("com.parking.administration.demo.repository")
 @EnableTransactionManagement
-@EntityScan("com.parking.administration.demo.domain.ParkingSpace")
-@ComponentScan(basePackages = {"com.parking.administration"})
+@EntityScan("com.parking.administration.demo.domain")
+@ComponentScan(basePackages = {"com.parking.administration.demo"})
 @RestController
 @SpringBootApplication
 public class ParkingAdminApplication {

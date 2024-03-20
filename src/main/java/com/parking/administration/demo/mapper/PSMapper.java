@@ -1,17 +1,24 @@
 package com.parking.administration.demo.mapper;
 
-import com.parking.administration.demo.response.PSGetResponse;
+import com.parking.administration.demo.domain.ParkingSpace;
+import com.parking.administration.dto.request.ParkingSpaceRequestPost;
+import com.parking.administration.dto.response.ParkingSpaceResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.factory.Mappers;
-import org.springframework.data.domain.Page;
-import com.parking.administration.demo.domain.ParkingSpace;
+
+import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PSMapper {
     ParkingSpace INSTANCE = Mappers.getMapper(ParkingSpace.class);
 
-    Page<PSGetResponse> toListPSGetResponse(Page<ParkingSpace> parkingSpaceList);
+    ParkingSpaceResponse toOptionalParkingSpace(ParkingSpace parkingSpaceOptional);
 
-    PSGetResponse ObjectToPSGetResponse(Object psOptional);
+    List<ParkingSpaceResponse> toListParkingSpace(List<ParkingSpace> parkingSpaceList);
+
+    ParkingSpace toParkingSpaceRequest(ParkingSpaceRequestPost parkingSpaceRequestPost);
+
+    ParkingSpaceResponse toParkingSpacePostRequest(ParkingSpaceRequestPost parkingSpaceRequestPost);
+
 }

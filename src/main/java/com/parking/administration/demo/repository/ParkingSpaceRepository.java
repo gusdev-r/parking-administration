@@ -6,9 +6,8 @@ import com.parking.administration.demo.domain.ParkingSpace;
 
 import java.util.UUID;
 @Repository
-public interface ParkingSpaceRepository extends JpaRepository<ParkingSpace, UUID> {
-
-    boolean existsByLicensePlateVehicle(String licensePlateVehicle);
-    boolean existsByVehicleSpaceNumber(String vehicleSpaceNumber);
-    boolean existsByApartmentAndBlock(String apartment, String block);
+public interface ParkingSpaceRepository extends JpaRepository<ParkingSpace, Long> {
+    boolean existsByVehicleLicensePlateNumber(String vehicleLicensePlateNumber);
+    boolean existsByCondominiumApartment(String apartment);
+    boolean existsByCondominiumBlock(String block);
 }
