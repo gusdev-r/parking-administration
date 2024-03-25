@@ -2,13 +2,18 @@ package com.parking.administration.demo.infra.exception.enums;
 
 public enum ErrorCode {
 
-    ON0001("It's not possible to create a new element with values that already are registered in the system",
+    ON0001("This was a bad request, check the data and try again.",
             "ON-0001"),
-    ON0002("The CPF format entered is not valid.", "ON-0002"),
+    FO0001("The CPF format entered is not valid.", "FO-0001"),
+    ON0003("This email is not valid.", "ON-0003"),
+    ON0004("Token not found.", "ON-0004"),
     WA0001("This Parking space was not found.", "WA-0001"),
     WA0002("This Vehicle was not found.", "WA-0002"),
-    WA0003("This Client was not found.", "WA-0003")
-    ;
+    WA0003("This User was not found.", "WA-0003"),
+    WA0004("This e-mail was already taken.", "WA-0004"),
+    EM0001("The e-mail has already been confirmed.", "EM-0001"),
+    NO0001("The attempt to send the e-mail was unsuccessful", "NO-0001")
+            ;
     private String message;
     private String code;
 
