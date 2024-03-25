@@ -1,10 +1,10 @@
 package com.parking.administration.demo.infra.exception;
 
-public class BadRequestException extends RuntimeException {
+public class TokenException extends IllegalStateException {
 
     private String code;
 
-    public BadRequestException(String code, String message) {
+    public TokenException(String code, String message) {
         super(message);
         this.code = code;
     }

@@ -1,8 +1,10 @@
 package com.parking.administration.dto.request;
 
-public record RegistrationRequest(
+public record UserRegistrationRequest(
         String fullName,
         String email,
-        String password
+        String password,
+        String document,
+        String username
         ){
 }

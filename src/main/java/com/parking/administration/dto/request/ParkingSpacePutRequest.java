@@ -92,7 +92,7 @@ public class ParkingSpacePutRequest {
         this.vehicleLicensePlateNumber = vehicleLicensePlateNumber;
     }
 
-    // Construtor privado para uso interno pelo Builder
+    //private Constructor to use only in this class
     private ParkingSpacePutRequest(String condominiumBlock, String condominiumApartment, String vehicleBrand,
                                    String vehicleModel, String vehicleColor, String responsibleVehicleName,
                                    String vehicleSpaceNumber, String vehicleLicensePlateNumber) {

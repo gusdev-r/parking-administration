@@ -47,7 +47,7 @@ public class ParkingSpace implements Serializable {
     private Vehicle vehicle;
     @ManyToOne
     @JoinColumn(name = "client_id")
-    private Client client;
+    private User user;
 
     public ParkingSpace() {
     }

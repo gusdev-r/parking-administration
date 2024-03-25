@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping(path = {"/v1/api/registration/", "/v1/user"})
-public class RegistrationController {
+public class UserRegistrationController {
 
     private final RegistrationService registrationService;
 
-    public RegistrationController(RegistrationService registrationService) {
+    public UserRegistrationController(RegistrationService registrationService) {
         this.registrationService = registrationService;
     }
 

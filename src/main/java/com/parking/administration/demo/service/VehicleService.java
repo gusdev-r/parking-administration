@@ -6,7 +6,6 @@ import com.parking.administration.demo.infra.exception.enums.ErrorCode;
 import com.parking.administration.demo.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
