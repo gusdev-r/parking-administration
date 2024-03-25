@@ -24,7 +24,7 @@ public class Vehicle {
 
     @ManyToOne
     @JoinColumn(name = "client_id")
-    private Client client;
+    private User user;
 
     @OneToOne(mappedBy = "vehicle")
     private ParkingSpace parkingSpace;
