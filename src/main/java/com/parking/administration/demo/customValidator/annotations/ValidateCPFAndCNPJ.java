@@ -8,8 +8,8 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = CpfValidator.class)
-public @interface ValidateCPF {
+@Constraint(validatedBy = CPFAndCNPJValidator.class)
+public @interface ValidateCPFAndCNPJ {
 
     public String message() default "Invalid CPF: The CPF entered is not valid.";
 

@@ -1,12 +1,11 @@
 package com.parking.administration.demo.customValidator.annotations;
 
-import com.parking.administration.demo.customValidator.annotations.ValidateCPF;
-import com.parking.administration.demo.infra.exception.CpfNotValidException;
+import com.parking.administration.demo.infra.exception.DocumentNotValidException;
 import com.parking.administration.demo.infra.exception.enums.ErrorCode;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class CpfValidator implements ConstraintValidator<ValidateCPF, String> {
+public class CPFAndCNPJValidator implements ConstraintValidator<ValidateCPFAndCNPJ, String> {
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
@@ -18,7 +17,7 @@ public class CpfValidator implements ConstraintValidator<ValidateCPF, String> {
                 return cnpjValidation(s);
             }
         } else {
-            throw new CpfNotValidException(ErrorCode.ON0002.getMessage(), ErrorCode.ON0002.getCode());
+            throw new DocumentNotValidException(ErrorCode.FO0001.getMessage(), ErrorCode.FO0001.getCode());
         }
     }
     private Boolean cpfValidation(String cpf) {
