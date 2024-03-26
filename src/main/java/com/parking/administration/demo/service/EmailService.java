@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import static com.parking.administration.demo.utils.Utility.LOGGER;
 @Service
 public class EmailService implements EmailSender {
-    private final JavaMailSender javaMailSender;
+    private JavaMailSender javaMailSender;
 
     public EmailService(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;

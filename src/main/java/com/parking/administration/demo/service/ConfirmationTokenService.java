@@ -7,7 +7,7 @@ import java.util.Optional;
 
 @Service
 public class ConfirmationTokenService {
-    private ConfirmationTokenRepository tokenRepository;
+    private final ConfirmationTokenRepository tokenRepository;
 
     public ConfirmationTokenService(ConfirmationTokenRepository tokenRepository) {
         this.tokenRepository = tokenRepository;
