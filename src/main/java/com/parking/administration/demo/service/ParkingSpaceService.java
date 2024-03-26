@@ -1,16 +1,17 @@
 package com.parking.administration.demo.service;
 
-import com.parking.administration.demo.customValidator.ParkingSpaceValidator;
 import com.parking.administration.demo.domain.ParkingSpace;
+import com.parking.administration.demo.domain.User;
 import com.parking.administration.demo.domain.Vehicle;
+import com.parking.administration.demo.dto.request.ParkingSpacePutRequest;
 import com.parking.administration.demo.infra.exception.BadRequestException;
 import com.parking.administration.demo.infra.exception.ParkingSpaceNotFoundException;
+import com.parking.administration.demo.infra.exception.UserNotFoundException;
 import com.parking.administration.demo.infra.exception.enums.ErrorCode;
 import com.parking.administration.demo.repository.ParkingSpaceRepository;
-import com.parking.administration.dto.request.ParkingSpacePutRequest;
+import com.parking.administration.demo.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,47 +22,57 @@ import static com.parking.administration.demo.utils.Utility.LOGGER;
 @Service
 public class ParkingSpaceService {
     private ParkingSpaceRepository psRepository;
-    private ParkingSpaceValidator parkingSpaceValidator;
     private VehicleService vehicleService;
-
-    @Autowired
-    public ParkingSpaceService(ParkingSpaceRepository psRepository, ParkingSpaceValidator parkingSpaceValidator, VehicleService vehicleService) {
+    private UserRepository userRepository;
+    public ParkingSpaceService(ParkingSpaceRepository psRepository, VehicleService vehicleService,
+                               UserRepository userRepository) {
         this.psRepository = psRepository;
-        this.parkingSpaceValidator = parkingSpaceValidator;
         this.vehicleService = vehicleService;
+        this.userRepository = userRepository;
     }
-
     public ParkingSpaceService() {
-
     }
 
     @Transactional
-    public ParkingSpace save(ParkingSpace parkingSpace) throws BadRequestException {
-        parkingSpaceValidator.validateRegisterToCreate(parkingSpace);
-        return psRepository.save(parkingSpace);
+    public ParkingSpace save(ParkingSpace parkingSpace, Long userId) throws BadRequestException {
 
-    }
-    @Transactional
-    public void create(ParkingSpace parkingSpace) {
-        parkingSpaceValidator.validateRegisterToCreate(parkingSpace);
+        LOGGER.info("Validating if already exists vehicle license plate number. - ParkingSpaceValidator");
+        if (psRepository.existsByVehicleLicensePlateNumber(parkingSpace.getVehicleLicensePlateNumber())) {
+            LOGGER.error("This vehicle license plate number is already registered - ParkingSpaceValidator");
+            throw new BadRequestException(ErrorCode.ON0001.getMessage(), ErrorCode.ON0001.getCode());
+        }
+
+        LOGGER.info("Validating validation if already exists condominium apartment. - ParkingSpaceValidator");
+        if (psRepository.existsByCondominiumApartment(parkingSpace.getCondominiumApartment())) {
+            LOGGER.error("This condominium apartment is already registered - ParkingSpaceValidator");
+            throw new BadRequestException(ErrorCode.ON0001.getMessage(), ErrorCode.ON0001.getCode());
+        }
+
+        LOGGER.info("Validating if already exists condominium block. - ParkingSpaceValidator");
+        if (psRepository.existsByCondominiumBlock(parkingSpace.getCondominiumBlock())) {
+            LOGGER.error("This condominium block is already registered - ParkingSpaceValidator");
+            throw new BadRequestException(ErrorCode.ON0001.getMessage(), ErrorCode.ON0001.getCode());
+        }
+
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()) {
+            LOGGER.warn("User not found - ParkingSpaceService");
+            throw new UserNotFoundException(ErrorCode.WA0003.getMessage(), ErrorCode.WA0003.getCode());
+        }
         Vehicle vehicle = new Vehicle(
-                        parkingSpace.getVehicleBrand(),
-                        parkingSpace.getVehicleColor(),
-                        parkingSpace.getVehicleModel(),
-                        parkingSpace.getVehicleLicensePlateNumber());
+                parkingSpace.getVehicleBrand(),
+                parkingSpace.getVehicleModel(),
+                parkingSpace.getVehicleColor(),
+                parkingSpace.getVehicleLicensePlateNumber());
         vehicleService.save(vehicle);
-        psRepository.save(parkingSpace);
+
+        userOptional.get().getVehicleList().add(vehicle);
+        userOptional.get().getParkingSpaceList().add(parkingSpace);
+
+        return psRepository.save(parkingSpace);
     }
 
-    public boolean existsByVehicleLicensePlateNumber(String vehicleSpaceNumber) {
-        return psRepository.existsByVehicleLicensePlateNumber(vehicleSpaceNumber);
-    }
-    public boolean existsByCondominiumApartment (String apartment) {
-        return psRepository.existsByCondominiumApartment(apartment);
-    }
-    public boolean existsByCondominiumBlock (String block) {
-        return psRepository.existsByCondominiumBlock(block);
-    }
+
     public List<ParkingSpace> findAll() {
         return psRepository.findAll();
     }

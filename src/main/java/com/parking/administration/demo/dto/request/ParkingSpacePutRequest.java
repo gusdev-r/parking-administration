@@ -1,7 +1,6 @@
-package com.parking.administration.dto.request;
+package com.parking.administration.demo.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
 
 
 public class ParkingSpacePutRequest {

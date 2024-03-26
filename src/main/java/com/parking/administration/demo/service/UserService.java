@@ -3,14 +3,11 @@ package com.parking.administration.demo.service;
 
 import com.parking.administration.demo.domain.User;
 import com.parking.administration.demo.domain.token.ConfirmationToken;
-import com.parking.administration.demo.domain.token.ConfirmationTokenService;
-import com.parking.administration.demo.email.EmailService;
 import com.parking.administration.demo.infra.exception.BadRequestException;
 import com.parking.administration.demo.infra.exception.UserNotFoundException;
 import com.parking.administration.demo.infra.exception.VehicleNotFoundException;
 import com.parking.administration.demo.infra.exception.enums.ErrorCode;
 import com.parking.administration.demo.repository.UserRepository;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,17 +22,18 @@ import static com.parking.administration.demo.utils.Utility.LOGGER;
 
 @Service
 public class UserService implements UserDetailsService {
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final ConfirmationTokenService confirmationTokenService;
-    private final EmailService emailService;
-
+    private UserRepository userRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private ConfirmationTokenService confirmationTokenService;
+    private EmailService emailService;
     public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder,
                        ConfirmationTokenService confirmationTokenService, EmailService emailService) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.confirmationTokenService = confirmationTokenService;
         this.emailService = emailService;
+    }
+    public UserService() {
     }
 
     public User save(User user) {

@@ -29,9 +29,6 @@ public class ParkingSpace implements Serializable {
     @Column(name = "vehicle_color",nullable = false, length = 70)
     private String vehicleColor;
 
-    @Column(name = "created_at",nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
     @Column(name = "responsible_vehicle_name",nullable = false, length = 140)
     private String responsibleVehicleName;
 
@@ -41,6 +38,8 @@ public class ParkingSpace implements Serializable {
     @Column(name = "vehicle_license_plate_number",nullable = false, unique = true, length = 7)
     @Size(max = 7)
     private String vehicleLicensePlateNumber;
+    @Column(name = "created_at",nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToOne
     @JoinColumn(name = "vehicle_id")

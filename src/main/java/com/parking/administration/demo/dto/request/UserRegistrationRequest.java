@@ -1,4 +1,4 @@
-package com.parking.administration.dto.request;
+package com.parking.administration.demo.dto.request;
 
 public record UserRegistrationRequest(
         String fullName,

@@ -2,9 +2,11 @@ package com.parking.administration.demo.domain.token;
 
 import com.parking.administration.demo.domain.User;
 import jakarta.persistence.*;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+@Entity
 public class ConfirmationToken {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

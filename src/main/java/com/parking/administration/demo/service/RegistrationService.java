@@ -1,16 +1,17 @@
 package com.parking.administration.demo.service;
 
 import com.parking.administration.demo.customValidator.EmailValidator;
+import com.parking.administration.demo.customValidator.PasswordValidator;
 import com.parking.administration.demo.domain.User;
+import com.parking.administration.demo.domain.email.EmailSender;
 import com.parking.administration.demo.domain.enums.UserRole;
 import com.parking.administration.demo.domain.token.ConfirmationToken;
-import com.parking.administration.demo.domain.token.ConfirmationTokenService;
-import com.parking.administration.demo.email.EmailSender;
+import com.parking.administration.demo.dto.request.UserRegistrationRequest;
 import com.parking.administration.demo.infra.exception.EmailException;
 import com.parking.administration.demo.infra.exception.EmailNotValidException;
+import com.parking.administration.demo.infra.exception.PasswordNotValidException;
 import com.parking.administration.demo.infra.exception.TokenException;
 import com.parking.administration.demo.infra.exception.enums.ErrorCode;
-import com.parking.administration.dto.request.UserRegistrationRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -21,16 +22,22 @@ import static com.parking.administration.demo.utils.Utility.LOGGER;
 @Service
 public class RegistrationService {
 
-    private final UserService userService;
-    private final EmailValidator emailValidator;
-    private final EmailSender emailSender;
-    private final ConfirmationTokenService confirmationTokenService;
+    private UserService userService;
+    private EmailValidator emailValidator;
+    private EmailSender emailSender;
+    private ConfirmationTokenService confirmationTokenService;
+    private PasswordValidator passwordValidator;
 
-    public RegistrationService(UserService userService, EmailValidator emailValidator, EmailSender emailSender, ConfirmationTokenService confirmationTokenService) {
+    public RegistrationService(UserService userService, EmailValidator emailValidator, EmailSender emailSender,
+                               ConfirmationTokenService confirmationTokenService, PasswordValidator passwordValidator) {
         this.userService = userService;
         this.emailValidator = emailValidator;
         this.emailSender = emailSender;
         this.confirmationTokenService = confirmationTokenService;
+        this.passwordValidator = passwordValidator;
+    }
+
+    public RegistrationService() {
     }
 
     public String register(UserRegistrationRequest requestUser) {
@@ -39,6 +46,13 @@ public class RegistrationService {
             LOGGER.warn("The email format is not valid - RegistrationService");
             throw new EmailNotValidException(ErrorCode.ON0003.getMessage(), ErrorCode.ON0003.getCode());
         }
+
+        boolean isValidPassword = passwordValidator.test(requestUser.password());
+        if (!isValidPassword) {
+            LOGGER.warn("The password format is not valid - RegistrationService");
+            throw new PasswordNotValidException(ErrorCode.ON0005.getMessage(), ErrorCode.ON0005.getCode());
+        }
+
         String token = userService.signUpUser(
                 new User (
                         UserRole.USER,

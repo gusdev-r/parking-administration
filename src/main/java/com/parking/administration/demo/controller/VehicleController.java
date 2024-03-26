@@ -1,13 +1,11 @@
 package com.parking.administration.demo.controller;
 
+import com.parking.administration.demo.dto.response.VehicleResponse;
 import com.parking.administration.demo.mapper.VehicleMapper;
 import com.parking.administration.demo.service.VehicleService;
-import com.parking.administration.dto.response.VehicleResponse;
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.List;
 
@@ -17,13 +15,14 @@ import static com.parking.administration.demo.utils.Utility.LOGGER;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping(path = "/v1/vehicle")
 public class VehicleController {
-
     private VehicleService vehicleService;
     private VehicleMapper vehicleMapper;
-
     public VehicleController(VehicleService vehicleService, VehicleMapper vehicleMapper) {
         this.vehicleService = vehicleService;
         this.vehicleMapper = vehicleMapper;
+    }
+
+    public VehicleController() {
     }
 
     @GetMapping(path = "/show/{id}")

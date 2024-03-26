@@ -4,8 +4,8 @@ import com.parking.administration.demo.domain.Vehicle;
 import com.parking.administration.demo.infra.exception.VehicleNotFoundException;
 import com.parking.administration.demo.infra.exception.enums.ErrorCode;
 import com.parking.administration.demo.repository.VehicleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -14,10 +14,10 @@ import static com.parking.administration.demo.utils.Utility.LOGGER;
 @Service
 public class VehicleService {
     private VehicleRepository vehicleRepository;
-
-    @Autowired
     public VehicleService(VehicleRepository vehicleRepository) {
         this.vehicleRepository = vehicleRepository;
+    }
+    public VehicleService() {
     }
 
     public List<Vehicle> findAll() {

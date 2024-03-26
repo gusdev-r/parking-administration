@@ -1,9 +1,9 @@
 package com.parking.administration.demo.infra.exception;
 
-public class EmailNotValidException extends RuntimeException {
+public class PasswordNotValidException extends RuntimeException {
     private String code;
 
-    public EmailNotValidException(String code, String message) {
+    public PasswordNotValidException(String code, String message) {
         super(message);
         this.code = code;
     }

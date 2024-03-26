@@ -1,5 +1,6 @@
-package com.parking.administration.demo.email;
+package com.parking.administration.demo.service;
 
+import com.parking.administration.demo.domain.email.EmailSender;
 import com.parking.administration.demo.infra.exception.EmailException;
 import com.parking.administration.demo.infra.exception.enums.ErrorCode;
 import jakarta.mail.MessagingException;
@@ -8,13 +9,15 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
 import static com.parking.administration.demo.utils.Utility.LOGGER;
 @Service
 public class EmailService implements EmailSender {
     private JavaMailSender javaMailSender;
-
     public EmailService(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
+    }
+    public EmailService() {
     }
 
     /* TODO use queue instead @Async */

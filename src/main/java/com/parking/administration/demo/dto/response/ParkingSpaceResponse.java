@@ -1,4 +1,4 @@
-package com.parking.administration.dto.response;
+package com.parking.administration.demo.dto.response;
 
 import java.time.LocalDateTime;
 

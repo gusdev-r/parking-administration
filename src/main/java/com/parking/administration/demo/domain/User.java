@@ -55,12 +55,12 @@ public class User implements UserDetails {
     private List<Vehicle> vehicleList;
 
     @OneToMany(mappedBy = "user")
-    private List<ParkingSpace> parkingSpace;
+    private List<ParkingSpace> parkingSpaceList;
 
 
     public User(String fullName, String email, String password, String document, String username, UserRole userRole,
                 Boolean locked, Boolean enabled, LocalDateTime createdAt, LocalDateTime updatedAt,
-                List<Vehicle> vehicleList, List<ParkingSpace> parkingSpace) {
+                List<Vehicle> vehicleList, List<ParkingSpace> parkingSpaceList) {
         this.fullName = fullName;
         this.email = email;
         this.password = password;
@@ -72,7 +72,7 @@ public class User implements UserDetails {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.vehicleList = vehicleList;
-        this.parkingSpace = parkingSpace;
+        this.parkingSpaceList = parkingSpaceList;
     }
 
    public User(UserRole userRole, String fullName, String email, String password, String document, String username) {
@@ -85,6 +85,14 @@ public class User implements UserDetails {
    }
 
     public User() {
+    }
+
+    public List<Vehicle> getVehicleList() {
+        return vehicleList;
+    }
+
+    public List<ParkingSpace> getParkingSpaceList() {
+        return parkingSpaceList;
     }
 
     public Long getId() {

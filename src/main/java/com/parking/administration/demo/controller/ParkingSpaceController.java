@@ -1,12 +1,12 @@
 package com.parking.administration.demo.controller;
 
+import com.parking.administration.demo.dto.request.ParkingSpacePutRequest;
+import com.parking.administration.demo.dto.request.ParkingSpaceRequestPost;
+import com.parking.administration.demo.dto.response.ParkingSpaceResponse;
 import com.parking.administration.demo.infra.exception.BadRequestException;
 import com.parking.administration.demo.infra.exception.ParkingSpaceNotFoundException;
 import com.parking.administration.demo.mapper.PSMapper;
 import com.parking.administration.demo.service.ParkingSpaceService;
-import com.parking.administration.dto.request.ParkingSpacePutRequest;
-import com.parking.administration.dto.request.ParkingSpaceRequestPost;
-import com.parking.administration.dto.response.ParkingSpaceResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +20,15 @@ import static com.parking.administration.demo.utils.Utility.LOGGER;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping(path = {"/v1/api/ps/api", "/v1/api/ps/api/"})
 public class ParkingSpaceController {
-    private final PSMapper psMapper;
-    private final ParkingSpaceService parkingSpaceService;
+    private PSMapper psMapper;
+    private ParkingSpaceService parkingSpaceService;
 
-    public ParkingSpaceController(PSMapper psMapper, ParkingSpaceService parkingSpaceService) {
+    public ParkingSpaceController( PSMapper psMapper, ParkingSpaceService parkingSpaceService) {
         this.psMapper = psMapper;
         this.parkingSpaceService = parkingSpaceService;
+    }
+
+    public ParkingSpaceController() {
     }
 
     @GetMapping("/show")
@@ -50,14 +53,16 @@ public class ParkingSpaceController {
 
     }
     @PostMapping("/create")
-    public ResponseEntity<ParkingSpaceResponse> createParkingSpace(@RequestBody @Valid ParkingSpaceRequestPost parkingSpaceRequestPost) throws BadRequestException {
-        parkingSpaceService.save(psMapper.toParkingSpaceRequest(parkingSpaceRequestPost));
+    public ResponseEntity<ParkingSpaceResponse> createParkingSpace(
+            @RequestBody @Valid ParkingSpaceRequestPost request, @PathVariable Long userId)
+            throws BadRequestException {
+
+        parkingSpaceService.save(psMapper.toParkingSpaceRequest(request), userId);
         LOGGER.info("Saving your parking space at the system - ParkingSpaceController");
-        var response = psMapper.toParkingSpacePostRequest(parkingSpaceRequestPost);
-        //return ResponseEntity.status(HttpStatus.CREATED).body("Parking space was created with successful. - ParkingSpaceController");
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response)  ;
+        var response = psMapper.toParkingSpacePostRequest(request);
 
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping(path = "/update/{id}")

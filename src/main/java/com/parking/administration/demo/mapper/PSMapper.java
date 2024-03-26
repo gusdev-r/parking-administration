@@ -1,8 +1,8 @@
 package com.parking.administration.demo.mapper;
 
 import com.parking.administration.demo.domain.ParkingSpace;
-import com.parking.administration.dto.request.ParkingSpaceRequestPost;
-import com.parking.administration.dto.response.ParkingSpaceResponse;
+import com.parking.administration.demo.dto.request.ParkingSpaceRequestPost;
+import com.parking.administration.demo.dto.response.ParkingSpaceResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.factory.Mappers;

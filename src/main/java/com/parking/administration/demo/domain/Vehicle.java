@@ -29,10 +29,10 @@ public class Vehicle {
     @OneToOne(mappedBy = "vehicle")
     private ParkingSpace parkingSpace;
 
-    public Vehicle(String brand, String color, String model, String licensePlateNumber) {
+    public Vehicle(String brand, String model, String color,  String licensePlateNumber) {
         this.brand = brand;
-        this.color = color;
         this.model = model;
+        this.color = color;
         this.licensePlateNumber = licensePlateNumber;
     }
 
