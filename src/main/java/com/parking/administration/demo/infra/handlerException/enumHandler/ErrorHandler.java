@@ -7,6 +7,7 @@ public enum ErrorHandler {
             "ON-0001"),
     ON0002("Invalid format, revise the data and try again.",
             "ON-0002"),
+    WA0001("Not found, revise the element and try again.", "WA-0001")
     ;
     private String message;
     private String code;

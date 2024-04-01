@@ -86,14 +86,14 @@ public class ParkingSpaceService {
         LOGGER.info("Validating the delete - ParkingSpaceService");
         psRepository.delete(parkingSpace);
     }
-    public void update(ParkingSpacePutRequest parkingSpacePutRequestUpdated, Long id) throws ParkingSpaceNotFoundException {
+    public void update(ParkingSpacePutRequest parkingSpaceRequestUpdated, Long id) throws ParkingSpaceNotFoundException {
         LOGGER.info("Validating the update - ParkingSpaceService");
         var optionalParkingSpaceToUpdate = psRepository.findById(id);
         validateParkingSpaceById(id);
 
         LOGGER.info("The parking space is updating - ParkingSpaceService");
         var parkingSpace = new ParkingSpace();
-        BeanUtils.copyProperties(parkingSpacePutRequestUpdated, parkingSpace);
+        BeanUtils.copyProperties(parkingSpaceRequestUpdated, parkingSpace);
         parkingSpace.setId(optionalParkingSpaceToUpdate.get().getId());
         parkingSpace.setCreatedAt(optionalParkingSpaceToUpdate.get().getCreatedAt());
         psRepository.save(parkingSpace);

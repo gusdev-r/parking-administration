@@ -70,7 +70,7 @@ public class RegistrationService {
     }
 
     @Transactional
-    public void confirmToken(String token) {
+    public String confirmToken(String token) {
 
         ConfirmationToken confirmationToken = confirmationTokenService
                 .getToken(token)
@@ -93,7 +93,7 @@ public class RegistrationService {
                 confirmationToken.getUser().getEmail()
         );
         LOGGER.info("Enabling the user - Registration Service");
-
+        return "The token was confirmed successfully!";
     }
     private String buildEmail(String name, String link) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +

@@ -23,9 +23,10 @@ public class VehicleService {
     public List<Vehicle> findAll() {
         return vehicleRepository.findAll();
     }
-    public Optional<Vehicle> findById(Long id) {
-        validateVehicleById(id);
-        return vehicleRepository.findById(id);
+    public Vehicle findById(Long id) {
+        LOGGER.info("Searching the user by Id - ClientService");
+        return vehicleRepository.findById(id)
+                .orElseThrow(() -> new VehicleNotFoundException(ErrorCode.WA0002.getMessage(), ErrorCode.WA0002.getCode()));
     }
 
     public Vehicle findByLicensePlateNumber(String licensePlateNumber) {

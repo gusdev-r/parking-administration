@@ -11,8 +11,8 @@ public enum ErrorCode {
     WA0001("This Parking space was not found.", "WA-0001"),
     WA0002("This Vehicle was not found.", "WA-0002"),
     WA0003("This user was not found.", "WA-0003"),
-    WA0004("This e-mail was already taken.", "WA-0004"),
     EM0001("The e-mail has already been confirmed.", "EM-0001"),
+    EM0002("This e-mail was already taken.", "EM-0001"),
     NO0001("The attempt to send the e-mail was unsuccessful", "NO-0001")
             ;
     private String message;

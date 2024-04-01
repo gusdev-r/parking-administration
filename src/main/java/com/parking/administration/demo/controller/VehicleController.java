@@ -28,19 +28,19 @@ public class VehicleController {
     @GetMapping(path = "/show/{id}")
     public ResponseEntity<VehicleResponse> getVehicleById(@PathVariable Long id) {
         LOGGER.info("Request receive to find a vehicle by param Id '{}' - VehicleController", id);
-        return ResponseEntity.status(HttpStatus.OK).body(vehicleMapper.toVehicle(vehicleService.findById(id).get()));
+        return ResponseEntity.status(HttpStatus.OK).body(vehicleMapper.toVehicleResponse(vehicleService.findById(id)));
     }
 
-    //verify the possibility to use this one only the permission of user, then the client can't access it
+    //verify the possibility to use this one only the permission of user moder, then the client can't access it
     @GetMapping(path = "/show/{licensePlateNumber}")
     public ResponseEntity<VehicleResponse> getVehicleByLicensePlateNumber(@RequestBody String licensePlateNumber) {
         LOGGER.info("Request receive to find a vehicle by param license plate number '{}' - VehicleController",
                 licensePlateNumber);
         return ResponseEntity.status(HttpStatus.OK).body(vehicleMapper
-                .toVehicle(vehicleService.findByLicensePlateNumber(licensePlateNumber)));
+                .toVehicleResponse(vehicleService.findByLicensePlateNumber(licensePlateNumber)));
     }
     @GetMapping(path = "/show")
-    private ResponseEntity<List<VehicleResponse>> getALlVehiclesRegistered() {
+    private ResponseEntity<List<VehicleResponse>> getAllVehiclesRegistered() {
         LOGGER.info("Request receive to list all vehicles available - VehicleController");
         return ResponseEntity.status(HttpStatus.OK).body(vehicleMapper.toListOfVehicle(vehicleService.findAll()));
     }

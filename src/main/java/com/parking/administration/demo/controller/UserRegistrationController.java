@@ -23,8 +23,6 @@ public class UserRegistrationController {
     }
     @GetMapping
     public ResponseEntity<String> confirmToken(@RequestParam("token") String token) {
-        return ResponseEntity.status(HttpStatus.OK).body("Token successfully confirmed");
+        return ResponseEntity.status(HttpStatus.OK).body(registrationService.confirmToken(token));
     }
-
-
 }

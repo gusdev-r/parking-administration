@@ -40,8 +40,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     private ResponseError userNotFound(UserNotFoundException userNotFoundException) {
         return new ResponseError(HttpStatus.NOT_FOUND, false,
-                ErrorHandler.ON0001.getMessage(), ErrorHandler.ON0001.getCode());
+                ErrorHandler.WA0001.getMessage(), ErrorHandler.WA0001.getCode());
     }
+
+
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     @ResponseBody
     @ExceptionHandler(EmailNotValidException.class)

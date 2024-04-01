@@ -2,12 +2,15 @@
 package com.parking.administration.demo.service;
 
 import com.parking.administration.demo.domain.User;
+import com.parking.administration.demo.domain.Vehicle;
 import com.parking.administration.demo.domain.token.ConfirmationToken;
 import com.parking.administration.demo.infra.exception.BadRequestException;
 import com.parking.administration.demo.infra.exception.UserNotFoundException;
 import com.parking.administration.demo.infra.exception.VehicleNotFoundException;
 import com.parking.administration.demo.infra.exception.enums.ErrorCode;
 import com.parking.administration.demo.repository.UserRepository;
+import com.parking.administration.demo.repository.VehicleRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,18 +43,47 @@ public class UserService implements UserDetailsService {
     public User save(User user) {
         return userRepository.save(user);
     }
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+
+    public User findUserById(Long id) {
+        LOGGER.info("Searching the user by Id - ClientService");
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.WA0003.getMessage(), ErrorCode.WA0003.getCode()));
+    }
+    public void updateVehicleAttributes(Vehicle vehicleUpdated, Long vehicleId, Long userId) {
+        Optional<User> optionalUser = validateUserOptional(userId);
+
+        Optional<Vehicle> optionalVehicle = optionalUser.get().getVehicleList()
+                .stream().filter(vehicle -> vehicle.getId().equals(vehicleId)).findFirst();
+
+        Vehicle vehicle = new Vehicle();
+        BeanUtils.copyProperties(vehicleUpdated, vehicle);
+        vehicle.setId(optionalVehicle.get().getId());
+        vehicle.setCreatedAt(optionalVehicle.get().getCreatedAt());
+
+        optionalUser.get().getVehicleList().remove(optionalVehicle.get());
+        optionalUser.get().getVehicleList().add(vehicle);
     }
 
-    private void validateClientById(Long id) {
-        LOGGER.info("Starting the validation of the client space searched by Id - ClientService");
-        Optional<User> clientOptional = userRepository.findById(id);
-        if (clientOptional.isEmpty()) {
-            LOGGER.error("This user was not found or not exists at the system - ClientService");
-            throw new VehicleNotFoundException(ErrorCode.WA0003.getMessage(), ErrorCode.WA0003.getCode());
+    private Optional<User> validateUserOptional(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException(ErrorCode.WA0003.getMessage(), ErrorCode.WA0003.getCode());
         }
+        return optionalUser;
     }
+
+    public void deleteVehicleRegistered(Long userId, Long vehicleId) {
+        Optional<User>  optionalUser = validateUserOptional(userId);
+
+        Optional<Vehicle> optionalVehicle = optionalUser.get().getVehicleList()
+                .stream().filter(vehicle -> vehicle.getId().equals(vehicleId)).findFirst();
+
+        if (optionalVehicle.isEmpty()) {
+            throw new VehicleNotFoundException(ErrorCode.WA0002.getMessage(), ErrorCode.WA0002.getCode());
+        }
+        optionalUser.get().getVehicleList().remove(optionalVehicle.get());
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(
@@ -62,7 +95,7 @@ public class UserService implements UserDetailsService {
 
        if (userExists) {
            LOGGER.error("The email was already taken - ClientService");
-           throw new BadRequestException(ErrorCode.WA0004.getMessage(), ErrorCode.WA0004.getCode());
+           throw new BadRequestException(ErrorCode.EM0002.getMessage(), ErrorCode.EM0002.getCode());
        }
        String encodedPassword = bCryptPasswordEncoder.encode(userRegisterRequest.getPassword());
        userRegisterRequest.setPassword(encodedPassword);
