@@ -1,7 +1,5 @@
 package com.parking.administration.demo.controller;
 
-import com.parking.administration.demo.domain.User;
-import com.parking.administration.demo.domain.Vehicle;
 import com.parking.administration.demo.dto.request.VehiclePutRequest;
 import com.parking.administration.demo.dto.response.VehicleResponse;
 import com.parking.administration.demo.mapper.VehicleMapper;
@@ -11,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -22,16 +19,16 @@ public class UserController {
     private UserService userService;
 
 
-    @GetMapping("/v/{userId}")
+    @GetMapping("vehicle/list/{userId}")
     public ResponseEntity<List<VehicleResponse>> getAllVehicles(@PathVariable Long userId) {
         var vehicleListResponse = vehicleMapper.toListOfVehicle(userService.findUserById(userId).getVehicleList());
         return ResponseEntity.status(HttpStatus.OK).body(vehicleListResponse);
     }
-    @DeleteMapping("/{userId}/v/{vehicleId}")
+    @DeleteMapping("{userId}/{vehicleId}")
     public void deleteVehicleById (@PathVariable Long userId ,@PathVariable Long vehicleId) {
         userService.deleteVehicleRegistered(userId, vehicleId);
     }
-    @PutMapping("/{userId}/v/{vehicleId}")
+    @PutMapping("/{userId}/{vehicleId}")
     public void updateVehicle(@RequestBody VehiclePutRequest vehiclePutRequest,
                               @PathVariable Long userId , @PathVariable Long vehicleId) {
         var vehicleToUpdate = vehicleMapper.toVehiclePutRequest(vehiclePutRequest);

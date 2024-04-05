@@ -18,7 +18,7 @@ import static com.parking.administration.demo.utils.Utility.LOGGER;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping(path = {"/v1/api/ps/api", "/v1/api/ps/api/"})
+@RequestMapping(path = {"/v1/moder/ps/api", "/v1/moder/ps/api/"})
 public class ParkingSpaceController {
     private PSMapper psMapper;
     private ParkingSpaceService parkingSpaceService;
@@ -31,19 +31,19 @@ public class ParkingSpaceController {
     public ParkingSpaceController() {
     }
 
-    @GetMapping("/show")
+    @GetMapping("/search")
     public ResponseEntity<List<ParkingSpaceResponse>> getAllParkingSpace() {
         LOGGER.info("Request receive to list all the parking spaces. - ParkingSpaceController");
         var list = parkingSpaceService.findAll();
         var listConvertedMapper = psMapper.toListParkingSpace(list);
         return ResponseEntity.status(HttpStatus.OK).body(listConvertedMapper);
     }
-    @GetMapping("/show/{id}")
+    @GetMapping("/search/{id}")
     public ResponseEntity<ParkingSpaceResponse> getParkingSpaceById(@PathVariable Long id) throws ParkingSpaceNotFoundException {
         LOGGER.info("Request receive to list a parking space by param id '{}' - ParkingSpaceController", id);
         return ResponseEntity.status(HttpStatus.OK).body(psMapper.toOptionalParkingSpace(parkingSpaceService.findById(id).get()));
     }
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<String> deleteParkingSpace(@PathVariable Long id) throws ParkingSpaceNotFoundException {
         LOGGER.info("Request receive to delete the Parking Space from id: '{}' - ParkingSpaceController", id);
         var parkingSpaceOptionalToDelete = parkingSpaceService.findById(id);
@@ -52,7 +52,7 @@ public class ParkingSpaceController {
         return ResponseEntity.status(HttpStatus.OK).body("The parking space was deleted successfully.");
 
     }
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<ParkingSpaceResponse> createParkingSpace(
             @RequestBody @Valid ParkingSpaceRequestPost request, @PathVariable Long userId)
             throws BadRequestException {
@@ -65,7 +65,7 @@ public class ParkingSpaceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping(path = "/update/{id}")
+    @PutMapping(path = "{id}")
     public ResponseEntity<ParkingSpacePutRequest> updateParkingSpace(@PathVariable(value = "id") Long id, @RequestBody @Valid ParkingSpacePutRequest parkingSpacePutRequestUpdated) throws ParkingSpaceNotFoundException {
         LOGGER.info("Request receive to update - ParkingSpaceController");
         parkingSpaceService.update(parkingSpacePutRequestUpdated, id);
