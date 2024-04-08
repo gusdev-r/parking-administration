@@ -5,6 +5,7 @@ import com.parking.administration.demo.domain.User;
 import com.parking.administration.demo.domain.Vehicle;
 import com.parking.administration.demo.domain.token.ConfirmationToken;
 import com.parking.administration.demo.infra.exception.BadRequestException;
+import com.parking.administration.demo.infra.exception.PasswordNotValidException;
 import com.parking.administration.demo.infra.exception.UserNotFoundException;
 import com.parking.administration.demo.infra.exception.VehicleNotFoundException;
 import com.parking.administration.demo.infra.exception.enums.ErrorCode;
@@ -27,13 +28,11 @@ import static com.parking.administration.demo.utils.Utility.LOGGER;
 @Service
 public class UserService implements UserDetailsService {
     private UserRepository userRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
     private ConfirmationTokenService confirmationTokenService;
     private EmailService emailService;
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder,
+    public UserService(UserRepository userRepository,
                        ConfirmationTokenService confirmationTokenService, EmailService emailService) {
         this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.confirmationTokenService = confirmationTokenService;
         this.emailService = emailService;
     }
@@ -97,7 +96,13 @@ public class UserService implements UserDetailsService {
            LOGGER.error("The email was already taken - ClientService");
            throw new BadRequestException(ErrorCode.EM0002.getMessage(), ErrorCode.EM0002.getCode());
        }
+       BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
        String encodedPassword = bCryptPasswordEncoder.encode(userRegisterRequest.getPassword());
+
+       if (!bCryptPasswordEncoder.matches(userRegisterRequest.getPassword(), encodedPassword)) {
+           throw new PasswordNotValidException(ErrorCode.ON0003.getMessage(), ErrorCode.ON0003.getCode());
+        }
+
        userRegisterRequest.setPassword(encodedPassword);
        userRepository.save(userRegisterRequest);
 
