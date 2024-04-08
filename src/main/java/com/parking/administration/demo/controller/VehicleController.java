@@ -13,7 +13,7 @@ import static com.parking.administration.demo.utils.Utility.LOGGER;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping(path = "/v1/vehicle")
+@RequestMapping(path = "/v1/api/vehicle")
 public class VehicleController {
     private VehicleService vehicleService;
     private VehicleMapper vehicleMapper;

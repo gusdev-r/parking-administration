@@ -18,7 +18,7 @@ import static com.parking.administration.demo.utils.Utility.LOGGER;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping(path = {"/v1/moder/ps/api", "/v1/moder/ps/api/"})
+@RequestMapping(path = {"/v1/api/moder/ps/", "/v1/api/moder/ps"})
 public class ParkingSpaceController {
     private PSMapper psMapper;
     private ParkingSpaceService parkingSpaceService;

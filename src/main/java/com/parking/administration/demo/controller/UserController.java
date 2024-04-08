@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping(path = {"/v1/user/api", "/v1/user/api/"})
+@RequestMapping(path = {"/v1/api/user", "/v1/api/user/"})
 public class UserController {
 
     private VehicleMapper vehicleMapper;
