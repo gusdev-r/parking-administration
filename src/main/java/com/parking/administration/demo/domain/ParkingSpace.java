@@ -128,9 +128,9 @@ public class ParkingSpace implements Serializable {
     public void setVehicleLicensePlateNumber(String vehicleLicensePlateNumber) {
         this.vehicleLicensePlateNumber = vehicleLicensePlateNumber;
     }
-    private ParkingSpace(String condominiumBlock, String condominiumApartment, String vehicleBrand, String vehicleModel,
-                         String vehicleColor, LocalDateTime createdAt, Long id, String responsibleVehicleName,
-                         String vehicleSpaceNumber, String vehicleLicensePlateNumber) {
+    public ParkingSpace(String condominiumBlock, String condominiumApartment, String vehicleBrand, String vehicleModel,
+                        String vehicleColor, LocalDateTime createdAt, Long id, String responsibleVehicleName,
+                        String vehicleSpaceNumber, String vehicleLicensePlateNumber) {
         this.condominiumBlock = condominiumBlock;
         this.condominiumApartment = condominiumApartment;
         this.vehicleBrand = vehicleBrand;
@@ -143,7 +143,6 @@ public class ParkingSpace implements Serializable {
         this.vehicleLicensePlateNumber = vehicleLicensePlateNumber;
     }
 
-    // Getters
 
     public static ParkingSpaceBuilder builder() {
         return new ParkingSpaceBuilder();

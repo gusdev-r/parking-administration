@@ -46,8 +46,9 @@ public class User implements UserDetails {
     private Boolean enabled;
 
     @Column(name = "created_at", nullable = false, length = 70)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
+    //TODO Set the updatedAt when edit some value by the method updateVehicleAttributes or the methods at the userController
     @Column(name = "updated_at", nullable = false, length = 70)
     private LocalDateTime updatedAt;
 
@@ -89,6 +90,10 @@ public class User implements UserDetails {
 
     public List<Vehicle> getVehicleList() {
         return vehicleList;
+    }
+
+    public void setVehicleList(List<Vehicle> vehicleList) {
+        this.vehicleList = vehicleList;
     }
 
     public List<ParkingSpace> getParkingSpaceList() {
@@ -211,4 +216,100 @@ public class User implements UserDetails {
     }
 
 
+
+    public static UserBuilder builder() {
+        return new UserBuilder();
+    }
+
+    public static class UserBuilder {
+        private Long id;
+        private String fullName;
+        private String email;
+        private String password;
+        private String document;
+        private String username;
+        private UserRole userRole;
+        private Boolean locked;
+        private Boolean enabled;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+        private List<Vehicle> vehicleList;
+        private List<ParkingSpace> parkingSpaceList;
+
+        private UserBuilder() {
+        }
+
+
+
+        public UserBuilder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public UserBuilder fullName(String fullName) {
+            this.fullName = fullName;
+            return this;
+        }
+
+        public UserBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public UserBuilder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public UserBuilder document(String document) {
+            this.document = document;
+            return this;
+        }
+
+        public UserBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public UserBuilder userRole(UserRole userRole) {
+            this.userRole = userRole;
+            return this;
+        }
+
+        public UserBuilder locked(Boolean locked) {
+            this.locked = locked;
+            return this;
+        }
+
+        public UserBuilder enabled(Boolean enabled) {
+            this.enabled = enabled;
+            return this;
+        }
+
+        public UserBuilder createdAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public UserBuilder updatedAt(LocalDateTime updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+
+        public UserBuilder vehicleList(List<Vehicle> vehicleList) {
+            this.vehicleList = vehicleList;
+            return this;
+        }
+
+        public UserBuilder parkingSpaceList(List<ParkingSpace> parkingSpaceList) {
+            this.parkingSpaceList = parkingSpaceList;
+            return this;
+        }
+
+        public User build() {
+            User user = new User(fullName, email, password, document, username, userRole, locked, enabled, createdAt, updatedAt, vehicleList, parkingSpaceList);
+            user.setId(id);
+            return user;
+        }
+    }
 }
