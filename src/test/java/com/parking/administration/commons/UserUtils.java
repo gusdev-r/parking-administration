@@ -3,6 +3,7 @@ package com.parking.administration.commons;
 import com.parking.administration.demo.domain.ParkingSpace;
 import com.parking.administration.demo.domain.User;
 import com.parking.administration.demo.domain.Vehicle;
+import com.parking.administration.demo.domain.enums.UserRole;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,5 +30,13 @@ public class UserUtils {
                 .document("21328373281").username("jo8ao").vehicleList(vehicleList).parkingSpaceList(parkingSpaceList).build();
 
     }
+   public Vehicle vehicleUpdated() {
+       return Vehicle.builder().brand("Toyota").model("Supra").color("Silver")
+               .licensePlateNumber("XYZ9876").build();
+   }
 
+   public User userToSignUp() {
+        return User.builder().fullName("Meliodas").email("melpecados@gmail.com")
+                .password("eliZa31@#").document("12134819212").username("meliod012").build();
+   }
 }
