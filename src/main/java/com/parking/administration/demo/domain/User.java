@@ -49,6 +49,7 @@ public class User implements UserDetails {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     //TODO Set the updatedAt when edit some value by the method updateVehicleAttributes or the methods at the userController
+
     @Column(name = "updated_at", nullable = false, length = 70)
     private LocalDateTime updatedAt;
 
@@ -182,8 +183,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(userRole.name());
-        return Collections.singletonList(simpleGrantedAuthority);
+        return userRole.getAuthorities();
     }
 
     public String getPassword() {

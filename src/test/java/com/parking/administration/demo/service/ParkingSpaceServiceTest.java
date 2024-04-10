@@ -36,10 +36,8 @@ class ParkingSpaceServiceTest {
 
     @BeforeEach
     void setUp() {
-
         parkingSpaceList = parkingSpaceUtils.newParkingSpaceList();
     }
-
     @Test
     @DisplayName("save(), creates a new parking space")
     @Order(1)

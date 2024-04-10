@@ -106,10 +106,10 @@ public class UserService implements UserDetailsService {
        userRegisterRequest.setPassword(encodedPassword);
        userRepository.save(userRegisterRequest);
 
-       String token = UUID.randomUUID().toString();
+       String accountConfirmationToken = UUID.randomUUID().toString();
 
         ConfirmationToken confirmationToken = new ConfirmationToken(
-                token,
+                accountConfirmationToken,
                 userRegisterRequest,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(20)
@@ -118,7 +118,7 @@ public class UserService implements UserDetailsService {
 
         emailService.send(userRegisterRequest.getFullName(), userRegisterRequest.getEmail());
 
-       return token;
+       return accountConfirmationToken;
     }
     public int enableUser(String email) {
         return userRepository.enableUser(email);
