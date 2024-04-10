@@ -53,9 +53,9 @@ public class RegistrationService {
             throw new PasswordNotValidException(ErrorCode.ON0005.getMessage(), ErrorCode.ON0005.getCode());
         }
 
-        String token = userService.signUpUser(
+        String accountConfirmationToken = userService.signUpUser(
                 new User (
-                        UserRole.USER,
+                        requestUser.userRole(),
                         requestUser.fullName(),
                         requestUser.email(),
                         requestUser.password(),
@@ -63,10 +63,10 @@ public class RegistrationService {
                         requestUser.username())
         );
 
-        String link = "http://localhost:8080/v1/api/registration/confirm?token=" + token;
+        String link = "http://localhost:8080/v1/api/registration/confirm?token=" + accountConfirmationToken;
         emailSender.send(requestUser.email(),
                 buildEmail(requestUser.fullName(), link));
-        return token;
+        return accountConfirmationToken;
     }
 
     @Transactional
