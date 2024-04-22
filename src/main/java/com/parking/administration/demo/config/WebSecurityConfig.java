@@ -55,7 +55,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
-                                .requestMatchers("/v1/api/registration/**").hasAnyRole(ADMIN.name(), USER.name())
+                                .requestMatchers("/v1/api/registration/**").permitAll()
 
                                 .requestMatchers(GET, ADMIN_USER_ENDPOINT).hasAnyAuthority(ADMIN.name(), USER.name())
                                 .requestMatchers(POST, ADMIN_USER_ENDPOINT).hasAnyAuthority(ADMIN.name(), USER.name())
