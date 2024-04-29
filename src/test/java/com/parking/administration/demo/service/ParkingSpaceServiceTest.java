@@ -1,11 +1,12 @@
 package com.parking.administration.demo.service;
 
 import com.parking.administration.commons.ParkingSpaceUtils;
-import com.parking.administration.demo.controller.ParkingSpaceController;
-import com.parking.administration.demo.domain.ParkingSpace;
-import com.parking.administration.demo.infra.exception.BadRequestException;
-import com.parking.administration.demo.infra.exception.ParkingSpaceNotFoundException;
-import com.parking.administration.demo.repository.ParkingSpaceRepository;
+import com.parking.administration.controller.ParkingSpaceController;
+import com.parking.administration.domain.ParkingSpace;
+import com.parking.administration.infra.exception.BadRequestException;
+import com.parking.administration.infra.exception.ParkingSpaceNotFoundException;
+import com.parking.administration.repository.ParkingSpaceRepository;
+import com.parking.administration.service.ParkingSpaceService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;

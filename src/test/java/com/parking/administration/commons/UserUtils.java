@@ -1,9 +1,8 @@
 package com.parking.administration.commons;
 
-import com.parking.administration.demo.domain.ParkingSpace;
-import com.parking.administration.demo.domain.User;
-import com.parking.administration.demo.domain.Vehicle;
-import com.parking.administration.demo.domain.enums.UserRole;
+import com.parking.administration.domain.ParkingSpace;
+import com.parking.administration.domain.User;
+import com.parking.administration.domain.Vehicle;
 
 import java.util.ArrayList;
 import java.util.List;
