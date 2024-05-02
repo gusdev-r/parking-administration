@@ -9,7 +9,7 @@ import com.parking.administration.infra.exception.VehicleNotFoundException;
 import com.parking.administration.repository.UserRepository;
 import com.parking.administration.service.ConfirmationTokenService;
 import com.parking.administration.service.EmailService;
-import com.parking.administration.service.UserDetailsService;
+import com.parking.administration.service.UserDetailsServiceImp;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,10 +26,10 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class UserDetailsServiceTest {
+class UserDetailsServiceImpTest {
 
     @InjectMocks
-    private UserDetailsService userDetailsService;
+    private UserDetailsServiceImp userDetailsServiceImp;
     @Mock
     private UserRepository userRepository;
 
@@ -63,7 +63,7 @@ class UserDetailsServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         Assertions.assertThatNoException()
-                .isThrownBy(() -> userDetailsService.updateVehicleAttributes(vehicleUpdated, vehicleId, userId));
+                .isThrownBy(() -> userDetailsServiceImp.updateVehicleAttributes(vehicleUpdated, vehicleId, userId));
 
         Vehicle vehicle = user.getVehicleList().get(0);
 
@@ -82,7 +82,7 @@ class UserDetailsServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         Assertions.assertThatNoException()
-                .isThrownBy(() -> userDetailsService.updateVehicleAttributes(vehicleUpdated, vehicleId, userId));
+                .isThrownBy(() -> userDetailsServiceImp.updateVehicleAttributes(vehicleUpdated, vehicleId, userId));
 
         Vehicle vehicle = user.getVehicleList().get(0);
 
@@ -101,7 +101,7 @@ class UserDetailsServiceTest {
 
 
         Assertions.assertThatNoException().isThrownBy(
-                () -> userDetailsService.deleteVehicleRegistered(1L, 1L));
+                () -> userDetailsServiceImp.deleteVehicleRegistered(1L, 1L));
 
         Assertions.assertThat(user.getVehicleList()).isEmpty();
 
@@ -114,7 +114,7 @@ class UserDetailsServiceTest {
         when(userRepository.findById(10L)).thenReturn(Optional.empty());
 
         Assertions.assertThatException().isThrownBy(
-                () -> userDetailsService.deleteVehicleRegistered(10L, 1L))
+                () -> userDetailsServiceImp.deleteVehicleRegistered(10L, 1L))
                 .isInstanceOf(UserNotFoundException.class);
     }
     @Test
@@ -125,7 +125,7 @@ class UserDetailsServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         Assertions.assertThatException().isThrownBy(
-                        () -> userDetailsService.deleteVehicleRegistered(1L, 10L))
+                        () -> userDetailsServiceImp.deleteVehicleRegistered(1L, 10L))
                 .isInstanceOf(VehicleNotFoundException.class);
     }
 
@@ -135,7 +135,7 @@ class UserDetailsServiceTest {
     void loadUserByUsername() {
         String email = "joaosilva@gmail.com";
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        Assertions.assertThatNoException().isThrownBy(() -> userDetailsService.loadUserByUsername(email));
+        Assertions.assertThatNoException().isThrownBy(() -> userDetailsServiceImp.loadUserByUsername(email));
 
         assertNotNull(user.getUsername());
         assertNotNull(user.getEmail());
@@ -148,7 +148,7 @@ class UserDetailsServiceTest {
         String email = "noexist@gmail.com";
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
-        Assertions.assertThatException().isThrownBy(() -> userDetailsService.loadUserByUsername(email))
+        Assertions.assertThatException().isThrownBy(() -> userDetailsServiceImp.loadUserByUsername(email))
                 .isInstanceOf(UserNotFoundException.class);
     }
 
@@ -161,7 +161,7 @@ class UserDetailsServiceTest {
 
         when(userRepository.findByEmail(userToSignUp.getEmail())).thenReturn(Optional.empty());
 
-        Assertions.assertThatNoException().isThrownBy(() -> userDetailsService.signUpUser(userToSignUp));
+        Assertions.assertThatNoException().isThrownBy(() -> userDetailsServiceImp.signUpUser(userToSignUp));
 
         verify(confirmationTokenService, times(1)).saveConfirmationToken(any());
 
@@ -174,7 +174,7 @@ class UserDetailsServiceTest {
 
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         Assertions.assertThatException()
-                .isThrownBy(() -> userDetailsService.signUpUser(user)).isInstanceOf(BadRequestException.class);
+                .isThrownBy(() -> userDetailsServiceImp.signUpUser(user)).isInstanceOf(BadRequestException.class);
     }
     @Test
     @DisplayName("enableUser(), enable the user at the system with the query at the repository")
@@ -183,6 +183,6 @@ class UserDetailsServiceTest {
         String email = user.getEmail();
 
         when(userRepository.enableUser(email)).thenReturn(anyInt());
-        Assertions.assertThatNoException().isThrownBy(() -> userDetailsService.enableUser(email));
+        Assertions.assertThatNoException().isThrownBy(() -> userDetailsServiceImp.enableUser(email));
     }
 }

@@ -1,7 +1,7 @@
 package com.parking.administration.controller;
 
-import com.parking.administration.dto.request.AuthenticationRequest;
-import com.parking.administration.dto.response.AuthenticationResponse;
+import com.parking.administration.dto.AuthenticationRequest;
+import com.parking.administration.dto.AuthenticationResponse;
 import com.parking.administration.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

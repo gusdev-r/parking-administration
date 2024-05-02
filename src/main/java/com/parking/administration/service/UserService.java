@@ -12,8 +12,6 @@ import com.parking.administration.infra.exception.enums.ErrorCode;
 import com.parking.administration.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +23,10 @@ import static com.parking.administration.util.Utility.LOGGER;
 
 @RequiredArgsConstructor
 @Service
-public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
+public class UserDetailsServiceImp {
     private final UserRepository userRepository;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailService emailService;
-
-
-    public User save(User user) {
-        return userRepository.save(user);
-    }
 
     public User findUserById(Long id) {
         LOGGER.info("Searching the user by Id - ClientService");
@@ -75,40 +68,35 @@ public class UserDetailsService implements org.springframework.security.core.use
         optionalUser.get().getVehicleList().remove(optionalVehicle.get());
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(
-                ErrorCode.WA0003.getMessage(), ErrorCode.WA0003.getCode()));
-    }
-
-    public String signUpUser(User userRegisterRequest) {
-       boolean userExists = userRepository.findByEmail(userRegisterRequest.getEmail()).isPresent();
-
+    public String signUpUser(User userToRegister) {
+       boolean userExists = userRepository.findByEmail(userToRegister.getEmail()).isPresent();
        if (userExists) {
-           LOGGER.error("The email was already taken - ClientService");
+           LOGGER.error("The email was already taken - UserDetailsService");
            throw new BadRequestException(ErrorCode.EM0002.getMessage(), ErrorCode.EM0002.getCode());
        }
-       BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-       String encodedPassword = bCryptPasswordEncoder.encode(userRegisterRequest.getPassword());
 
-       if (!bCryptPasswordEncoder.matches(userRegisterRequest.getPassword(), encodedPassword)) {
+       BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+       String encodedPassword = bCryptPasswordEncoder.encode(userToRegister.getPassword());
+
+       if (!bCryptPasswordEncoder.matches(userToRegister.getPassword(), encodedPassword)) {
+           LOGGER.error("The encoded password does not match - UserDetailsService");
            throw new PasswordNotValidException(ErrorCode.ON0003.getMessage(), ErrorCode.ON0003.getCode());
         }
 
-       userRegisterRequest.setPassword(encodedPassword);
-       userRepository.save(userRegisterRequest);
+       userToRegister.setPassword(encodedPassword);
+       userRepository.save(userToRegister);
 
        String accountConfirmationToken = UUID.randomUUID().toString();
 
         ConfirmationToken confirmationToken = new ConfirmationToken(
                 accountConfirmationToken,
-                userRegisterRequest,
+                userToRegister,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(20)
         );
         confirmationTokenService.saveConfirmationToken(confirmationToken);
 
-        emailService.send(userRegisterRequest.getFullName(), userRegisterRequest.getEmail());
+        emailService.send(userToRegister.getFullName(), userToRegister.getEmail());
 
        return accountConfirmationToken;
     }

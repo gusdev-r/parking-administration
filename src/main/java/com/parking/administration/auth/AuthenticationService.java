@@ -2,8 +2,8 @@ package com.parking.administration.service;
 
 
 import com.parking.administration.domain.User;
-import com.parking.administration.dto.request.AuthenticationRequest;
-import com.parking.administration.dto.response.AuthenticationResponse;
+import com.parking.administration.dto.AuthenticationRequest;
+import com.parking.administration.dto.AuthenticationResponse;
 import com.parking.administration.jwt.JwtService;
 import com.parking.administration.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class AuthenticationService {
         User user = userRepository.findByEmail(request.email()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
-                .token(jwtToken)
+                .accessToken(jwtToken)
                 .build();
 
     }
