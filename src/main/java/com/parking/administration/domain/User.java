@@ -19,8 +19,17 @@ import java.util.Objects;
 @Entity
 @Table(name = "tb_user")
 public class User implements UserDetails {
+
+    @SequenceGenerator(
+            name = "user_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1
+    )
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence"
+    )
     private Long id;
 
     @Column(name = "full_name", nullable = false, length = 140)
@@ -48,7 +57,7 @@ public class User implements UserDetails {
     private Boolean enabled;
 
     @Column(name = "created_at", nullable = false, length = 70)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     //TODO Set the updatedAt when edit some value by the method updateVehicleAttributes or the methods at the userController
 
@@ -79,8 +88,8 @@ public class User implements UserDetails {
         this.parkingSpaceList = parkingSpaceList;
     }
 
-   public User(UserRole userRole, String fullName, String email, String password, String document, String username) {
-       this.userRole = userRole;
+   public User(String fullName, String email, String password, String document, String username) {
+       this.userRole = null;
        this.fullName = fullName;
        this.email = email;
        this.password = password;

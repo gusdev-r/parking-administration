@@ -1,3 +1,8 @@
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -8,7 +13,23 @@ spring:
     show-sql: true
     generate-ddl: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
   sql:
     init:
       mode: always
+  mail:
+    host: localhost
+    port: 1025
+    username: gusdev
+    password: gusdev
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: "*"
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 500
+          timeout: 3000
+          writetimeout: 5000

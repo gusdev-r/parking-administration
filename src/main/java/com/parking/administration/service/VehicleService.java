@@ -1,48 +1,41 @@
 package com.parking.administration.service;
 
 import com.parking.administration.domain.Vehicle;
+import com.parking.administration.dto.response.VehicleResponse;
 import com.parking.administration.infra.exception.VehicleNotFoundException;
 import com.parking.administration.infra.exception.enums.ErrorCode;
 import com.parking.administration.repository.VehicleRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.parking.administration.util.Utility.LOGGER;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class VehicleService {
-    private VehicleRepository vehicleRepository;
+    private final VehicleRepository vehicleRepository;
+    private final ModelMapper modelMapper;
 
-    public List<Vehicle> findAll() {
-        return vehicleRepository.findAll();
+    public List<VehicleResponse> findAll() {
+        return vehicleRepository.findAll().stream()
+                .map(vehicle -> modelMapper.map(vehicle, VehicleResponse.class)).toList();
     }
-    public Vehicle findById(Long id) {
+    public VehicleResponse findById(Long id) {
         LOGGER.info("Searching the user by Id - ClientService");
-        return vehicleRepository.findById(id)
+        Vehicle vehicle =  vehicleRepository.findById(id)
                 .orElseThrow(() -> new VehicleNotFoundException(ErrorCode.WA0002.getMessage(), ErrorCode.WA0002.getCode()));
+        return modelMapper.map(vehicle, VehicleResponse.class);
     }
 
-    public Vehicle findByLicensePlateNumber(String licensePlateNumber) {
-        return vehicleRepository.findByLicensePlateNumber(licensePlateNumber);
+    public VehicleResponse findByLicensePlateNumber(String licensePlateNumber) {
+        Vehicle vehicle = vehicleRepository.findByLicensePlateNumber(licensePlateNumber);
+        return modelMapper.map(vehicle, VehicleResponse.class);
     }
 
     public Vehicle save(Vehicle vehicle) {
         return vehicleRepository.save(vehicle);
     }
-
-    private void validateVehicleById(Long id) {
-        LOGGER.info("Starting the validation of the vehicle space searched by Id - VehicleService");
-        Optional<Vehicle> vehicleOptional = vehicleRepository.findById(id);
-        if (vehicleOptional.isEmpty()) {
-            LOGGER.error("This vehicle was not found or not exists at the system - VehicleService");
-            throw new VehicleNotFoundException(ErrorCode.WA0002.getMessage(), ErrorCode.WA0002.getCode());
-        }
-    }
-
 }

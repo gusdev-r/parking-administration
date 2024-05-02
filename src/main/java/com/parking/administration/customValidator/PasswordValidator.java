@@ -13,7 +13,7 @@ public class PasswordValidator implements Predicate<String> {
     public boolean test(String password) {
         if (!isValidPassword(password)) {
             LOGGER.error("Password format not valid - EmailValidator");
-            throw new EmailNotValidException(ErrorCode.ON0003.getMessage(), ErrorCode.ON0003.getCode());
+            throw new EmailNotValidException(ErrorCode.EM0003.getMessage(), ErrorCode.EM0003.getCode());
         }
         return true;
     }

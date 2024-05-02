@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-//@CrossOrigin(origins = "*", maxAge = 3600)
 @RequiredArgsConstructor
 @RequestMapping(path = {"/v1/api/registration/", "/v1/api/registration"})
 public class UserRegistrationController {

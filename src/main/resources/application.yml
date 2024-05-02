@@ -5,3 +5,11 @@ spring:
   profiles:
     active: dev
 #    active: ${PROFILE_TYPE:dev}
+
+application:
+  security:
+    jwt:
+      secret-key: ${SECRET_KEY_JWT}
+      expiration: 86400000
+#      refresh-token:
+#        expiration: 6048000000

@@ -1,7 +1,6 @@
 package com.parking.administration.controller;
 
 import com.parking.administration.dto.response.VehicleResponse;
-import com.parking.administration.mapper.VehicleMapper;
 import com.parking.administration.service.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,30 +11,27 @@ import java.util.List;
 
 import static com.parking.administration.util.Utility.LOGGER;
 
-@RestController
-//@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping(path = "/v1/api/vehicle")
 @RequiredArgsConstructor
+@RestController
 public class VehicleController {
 
     private final VehicleService vehicleService;
-    private final VehicleMapper vehicleMapper;
 
-    @GetMapping(path = "/show/{id}")
+    @GetMapping(path = "/show/id/{id}")
     public ResponseEntity<VehicleResponse> getVehicleById(@PathVariable Long id) {
         LOGGER.info("Request receive to find a vehicle by param Id '{}' - VehicleController", id);
-        return ResponseEntity.status(HttpStatus.OK).body(vehicleMapper.toVehicleResponse(vehicleService.findById(id)));
+        return ResponseEntity.status(HttpStatus.OK).body(vehicleService.findById(id));
     }
-    @GetMapping(path = "/show")
+    @GetMapping(path = "/show/license")
     public ResponseEntity<VehicleResponse> getVehicleByLicensePlateNumber(@RequestBody String licensePlateNumber) {
         LOGGER.info("Request receive to find a vehicle by param license plate number '{}' - VehicleController",
                 licensePlateNumber);
-        return ResponseEntity.status(HttpStatus.OK).body(vehicleMapper
-                .toVehicleResponse(vehicleService.findByLicensePlateNumber(licensePlateNumber)));
+        return ResponseEntity.status(HttpStatus.OK).body((vehicleService.findByLicensePlateNumber(licensePlateNumber)));
     }
-    @GetMapping(path = "/show")
+    @GetMapping(path = "/show/all")
     public ResponseEntity<List<VehicleResponse>> getAllVehiclesRegistered() {
         LOGGER.info("Request receive to list all vehicles available - VehicleController");
-        return ResponseEntity.status(HttpStatus.OK).body(vehicleMapper.toListOfVehicle(vehicleService.findAll()));
+        return ResponseEntity.status(HttpStatus.OK).body(vehicleService.findAll());
     }
 }

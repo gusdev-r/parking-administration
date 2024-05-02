@@ -3,6 +3,7 @@ package com.parking.administration.commons;
 import com.parking.administration.domain.ParkingSpace;
 import com.parking.administration.domain.User;
 import com.parking.administration.domain.Vehicle;
+import com.parking.administration.dto.request.VehiclePutRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +30,8 @@ public class UserUtils {
                 .document("21328373281").username("jo8ao").vehicleList(vehicleList).parkingSpaceList(parkingSpaceList).build();
 
     }
-   public Vehicle vehicleUpdated() {
-       return Vehicle.builder().brand("Toyota").model("Supra").color("Silver")
+   public VehiclePutRequest vehicleUpdated() {
+       return VehiclePutRequest.builder().brand("Toyota").model("Supra").color("Silver")
                .licensePlateNumber("XYZ9876").build();
    }
 

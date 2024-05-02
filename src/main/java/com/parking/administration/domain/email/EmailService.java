@@ -1,6 +1,5 @@
-package com.parking.administration.service;
+package com.parking.administration.domain.email;
 
-import com.parking.administration.domain.email.EmailSender;
 import com.parking.administration.infra.exception.EmailException;
 import com.parking.administration.infra.exception.enums.ErrorCode;
 import jakarta.mail.MessagingException;

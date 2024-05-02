@@ -11,7 +11,7 @@ public class EmailValidator implements Predicate<String> {
     public boolean test(String email) {
         if (!isValidEmail(email)) {
             LOGGER.error("Email format not valid - EmailValidator");
-            throw new EmailNotValidException(ErrorCode.ON0003.getMessage(), ErrorCode.ON0003.getCode());
+            throw new EmailNotValidException(ErrorCode.EM0003.getMessage(), ErrorCode.EM0003.getCode());
         }
         return true;
     }

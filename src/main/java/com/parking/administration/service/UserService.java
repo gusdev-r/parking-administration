@@ -3,19 +3,26 @@ package com.parking.administration.service;
 
 import com.parking.administration.domain.User;
 import com.parking.administration.domain.Vehicle;
+import com.parking.administration.domain.email.EmailService;
 import com.parking.administration.domain.token.ConfirmationToken;
+import com.parking.administration.dto.AuthenticationResponse;
+import com.parking.administration.dto.request.VehiclePutRequest;
+import com.parking.administration.dto.response.VehicleResponse;
 import com.parking.administration.infra.exception.BadRequestException;
 import com.parking.administration.infra.exception.PasswordNotValidException;
 import com.parking.administration.infra.exception.UserNotFoundException;
 import com.parking.administration.infra.exception.VehicleNotFoundException;
 import com.parking.administration.infra.exception.enums.ErrorCode;
+import com.parking.administration.jwt.JwtService;
 import com.parking.administration.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,17 +30,26 @@ import static com.parking.administration.util.Utility.LOGGER;
 
 @RequiredArgsConstructor
 @Service
-public class UserDetailsServiceImp {
+public class UserService {
     private final UserRepository userRepository;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailService emailService;
+    private final ModelMapper modelMapper;
+    private final JwtService jwtService;
 
     public User findUserById(Long id) {
-        LOGGER.info("Searching the user by Id - ClientService");
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(ErrorCode.WA0003.getMessage(), ErrorCode.WA0003.getCode()));
     }
-    public void updateVehicleAttributes(Vehicle vehicleUpdated, Long vehicleId, Long userId) {
+
+    public List<VehicleResponse> getAllVehiclesFromUser(Long id) {
+        LOGGER.info("Searching the user by Id - ClientService");
+        User user = findUserById(id);
+        return user.getVehicleList().stream().map(vehicleList -> modelMapper
+                .map(vehicleList, VehicleResponse.class)).toList();
+    }
+
+    public void updateVehicleAttributes(VehiclePutRequest vehicleUpdated, Long vehicleId, Long userId) {
         Optional<User> optionalUser = validateUserOptional(userId);
 
         Optional<Vehicle> optionalVehicle = optionalUser.get().getVehicleList()
@@ -80,16 +96,16 @@ public class UserDetailsServiceImp {
 
        if (!bCryptPasswordEncoder.matches(userToRegister.getPassword(), encodedPassword)) {
            LOGGER.error("The encoded password does not match - UserDetailsService");
-           throw new PasswordNotValidException(ErrorCode.ON0003.getMessage(), ErrorCode.ON0003.getCode());
+           throw new PasswordNotValidException(ErrorCode.EM0003.getMessage(), ErrorCode.EM0003.getCode());
         }
 
        userToRegister.setPassword(encodedPassword);
        userRepository.save(userToRegister);
 
-       String accountConfirmationToken = UUID.randomUUID().toString();
+       String randomTokenToConfirm = UUID.randomUUID().toString();
 
         ConfirmationToken confirmationToken = new ConfirmationToken(
-                accountConfirmationToken,
+                randomTokenToConfirm,
                 userToRegister,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(20)
@@ -98,7 +114,7 @@ public class UserDetailsServiceImp {
 
         emailService.send(userToRegister.getFullName(), userToRegister.getEmail());
 
-       return accountConfirmationToken;
+       return randomTokenToConfirm;
     }
     public int enableUser(String email) {
         return userRepository.enableUser(email);

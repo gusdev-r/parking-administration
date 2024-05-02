@@ -4,6 +4,8 @@ import com.parking.administration.domain.ParkingSpace;
 import com.parking.administration.domain.User;
 import com.parking.administration.domain.Vehicle;
 import com.parking.administration.dto.request.ParkingSpacePutRequest;
+import com.parking.administration.dto.request.ParkingSpaceRequestPost;
+import com.parking.administration.dto.response.ParkingSpaceResponse;
 import com.parking.administration.infra.exception.BadRequestException;
 import com.parking.administration.infra.exception.ParkingSpaceNotFoundException;
 import com.parking.administration.infra.exception.UserNotFoundException;
@@ -11,10 +13,10 @@ import com.parking.administration.infra.exception.enums.ErrorCode;
 import com.parking.administration.repository.ParkingSpaceRepository;
 import com.parking.administration.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,62 +30,77 @@ public class ParkingSpaceService {
     private final ParkingSpaceRepository psRepository;
     private final VehicleService vehicleService;
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Transactional
-    public ParkingSpace save(ParkingSpace parkingSpace, Long userId) throws BadRequestException {
+    public ParkingSpaceResponse createParkingSpace(ParkingSpaceRequestPost parkingSpace, Long userId) throws BadRequestException {
 
         LOGGER.info("Validating if already exists vehicle license plate number. - ParkingSpaceValidator");
-        if (psRepository.existsByVehicleLicensePlateNumber(parkingSpace.getVehicleLicensePlateNumber())) {
+        if (psRepository.existsByVehicleLicensePlateNumber(parkingSpace.vehicleLicensePlateNumber())) {
             LOGGER.error("This vehicle license plate number is already registered - ParkingSpaceValidator");
             throw new BadRequestException(ErrorCode.ON0001.getMessage(), ErrorCode.ON0001.getCode());
         }
 
         LOGGER.info("Validating validation if already exists condominium apartment. - ParkingSpaceValidator");
-        if (psRepository.existsByCondominiumApartment(parkingSpace.getCondominiumApartment())) {
+        if (psRepository.existsByCondominiumApartment(parkingSpace.condominiumApartment())) {
             LOGGER.error("This condominium apartment is already registered - ParkingSpaceValidator");
             throw new BadRequestException(ErrorCode.ON0001.getMessage(), ErrorCode.ON0001.getCode());
         }
 
         LOGGER.info("Validating if already exists condominium block. - ParkingSpaceValidator");
-        if (psRepository.existsByCondominiumBlock(parkingSpace.getCondominiumBlock())) {
+        if (psRepository.existsByCondominiumBlock(parkingSpace.condominiumBlock())) {
             LOGGER.error("This condominium block is already registered - ParkingSpaceValidator");
             throw new BadRequestException(ErrorCode.ON0001.getMessage(), ErrorCode.ON0001.getCode());
         }
 
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isEmpty()) {
-            LOGGER.warn("User not found - ParkingSpaceService");
-            throw new UserNotFoundException(ErrorCode.WA0003.getMessage(), ErrorCode.WA0003.getCode());
-        }
-        Vehicle vehicle = new Vehicle(
-                parkingSpace.getVehicleBrand(),
-                parkingSpace.getVehicleModel(),
-                parkingSpace.getVehicleColor(),
-                parkingSpace.getVehicleLicensePlateNumber());
-        vehicleService.save(vehicle);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.WA0003.getMessage(), ErrorCode.WA0003.getCode()));
 
-        userOptional.get().getVehicleList().add(vehicle);
-        userOptional.get().getParkingSpaceList().add(parkingSpace);
+        Vehicle vehicleToSave = new Vehicle(
+                parkingSpace.vehicleBrand(),
+                parkingSpace.vehicleModel(),
+                parkingSpace.vehicleColor(),
+                parkingSpace.vehicleLicensePlateNumber());
+        vehicleService.save(vehicleToSave);
 
-        return psRepository.save(parkingSpace);
+        ParkingSpace parkingSpaceToSave = ParkingSpace.builder()
+                .condominiumBlock(parkingSpace.condominiumBlock())
+                .condominiumApartment(parkingSpace.condominiumApartment())
+                .vehicleBrand(parkingSpace.vehicleBrand())
+                .vehicleModel(parkingSpace.vehicleModel())
+                .vehicleColor(parkingSpace.vehicleColor())
+                .responsibleVehicleName(parkingSpace.responsibleVehicleName())
+                .vehicleSpaceNumber(parkingSpace.vehicleSpaceNumber())
+                .vehicleLicensePlateNumber(parkingSpace.vehicleLicensePlateNumber())
+                .build();
+
+        user.getVehicleList().add(vehicleToSave);
+        user.getParkingSpaceList().add(parkingSpaceToSave);
+
+        ParkingSpace parkingSpaceSaved = psRepository.save(parkingSpaceToSave);
+        return modelMapper.map(parkingSpaceSaved, ParkingSpaceResponse.class);
     }
 
-
-    public List<ParkingSpace> findAll() {
-        return psRepository.findAll();
+    public List<ParkingSpaceResponse> findAll() {
+        return psRepository.findAll().stream().map(parkingSpace -> modelMapper
+                .map(parkingSpace, ParkingSpaceResponse.class)).toList();
     }
-    public Optional<ParkingSpace> findById(Long id) throws ParkingSpaceNotFoundException {
-        LOGGER.info("Validating the search - ParkingSpaceService");
+    public ParkingSpaceResponse findById(Long id) throws ParkingSpaceNotFoundException {
         validateParkingSpaceById(id);
-        return psRepository.findById(id);
+        ParkingSpace parkingSpace = psRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("ParkingSpace not found", ErrorCode.WA0003.getCode()));
+        return modelMapper.map(parkingSpace, ParkingSpaceResponse.class);
     }
     @Transactional
-    public void delete(ParkingSpace parkingSpace) {
+    public void delete(Long id) {
+        validateParkingSpaceById(id);
+        ParkingSpace parkingSpace = psRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("ParkingSpace not found", ErrorCode.WA0003.getCode()));
+
         LOGGER.info("Validating the delete - ParkingSpaceService");
         psRepository.delete(parkingSpace);
     }
     public void update(ParkingSpacePutRequest parkingSpaceRequestUpdated, Long id) throws ParkingSpaceNotFoundException {
-        LOGGER.info("Validating the update - ParkingSpaceService");
         var optionalParkingSpaceToUpdate = psRepository.findById(id);
         validateParkingSpaceById(id);
 
@@ -95,7 +112,6 @@ public class ParkingSpaceService {
         psRepository.save(parkingSpace);
     }
     private void validateParkingSpaceById(Long id) {
-        LOGGER.info("Starting the validation of the parking space searched by Id - ParkingSpaceValidator");
         Optional<ParkingSpace> psOptional = psRepository.findById(id);
         if (psOptional.isEmpty()) {
             LOGGER.error("This parking space was not found or not exists at the system - ParkingSpaceValidator");
