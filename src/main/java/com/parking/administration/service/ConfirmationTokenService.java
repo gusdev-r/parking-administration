@@ -2,18 +2,17 @@ package com.parking.administration.service;
 
 import com.parking.administration.domain.token.ConfirmationToken;
 import com.parking.administration.repository.ConfirmationTokenRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class ConfirmationTokenService {
-    private ConfirmationTokenRepository tokenRepository;
+
+    private final ConfirmationTokenRepository tokenRepository;
 
     public void saveConfirmationToken(ConfirmationToken token) {
         tokenRepository.save(token);

@@ -1,12 +1,9 @@
 package com.parking.administration.service;
 
-import com.parking.administration.customValidator.EmailValidator;
-import com.parking.administration.customValidator.PasswordValidator;
 import com.parking.administration.domain.User;
 import com.parking.administration.domain.email.EmailSender;
 import com.parking.administration.domain.enums.UserRole;
 import com.parking.administration.domain.token.ConfirmationToken;
-import com.parking.administration.dto.AuthenticationResponse;
 import com.parking.administration.dto.request.UserRegistrationRequest;
 import com.parking.administration.infra.exception.EmailException;
 import com.parking.administration.infra.exception.EmailNotValidException;
@@ -14,42 +11,42 @@ import com.parking.administration.infra.exception.PasswordNotValidException;
 import com.parking.administration.infra.exception.TokenException;
 import com.parking.administration.infra.exception.enums.ErrorCode;
 import com.parking.administration.jwt.JwtService;
-import com.parking.administration.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.regex.Pattern;
 
 import static com.parking.administration.util.Utility.LOGGER;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class RegistrationService {
 
-    private UserService userService;
-    private EmailValidator emailValidator;
-    private EmailSender emailSender;
-    private ConfirmationTokenService confirmationTokenService;
-    private PasswordValidator passwordValidator;
+    private final UserService userService;
+    private final EmailSender emailSender;
+    private final ConfirmationTokenService confirmationTokenService;
 
     private JwtService jwtService;
 
+    private boolean verifyEmail(String email) {
+        String regexEmail = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$";
+        return Pattern.matches(regexEmail, email);
+    }
+    private boolean verifyPassword(String password) {
+        String regexPassword = "^(?=.*[!@#$%^&*()-+=])(?=\\S+$).{8,}$";
+        return Pattern.matches(regexPassword, password);
+    }
+
     public String register(UserRegistrationRequest requestUser) {
-        boolean isValidEmail = emailValidator.test(requestUser.email());
-        if (!isValidEmail) {
+
+        if (!verifyEmail(requestUser.email())) {
             LOGGER.warn("The email format is not valid - RegistrationService");
             throw new EmailNotValidException(ErrorCode.EM0003.getMessage(), ErrorCode.EM0003.getCode());
         }
 
-        boolean isValidPassword = passwordValidator.test(requestUser.password());
-        if (!isValidPassword) {
+        if (!verifyPassword(requestUser.password())) {
             LOGGER.warn("The password format is not valid - RegistrationService");
             throw new PasswordNotValidException(ErrorCode.ON0005.getMessage(), ErrorCode.ON0005.getCode());
         }
@@ -66,7 +63,8 @@ public class RegistrationService {
 
         String accountConfirmationToken = userService.signUpUser(user);
 
-        String link = "http://localhost:8080/v1/api/registration/confirm?token=" + accountConfirmationToken;
+        String link = "http://localhost:8082/v1/api/registration/confirm/token?token=" + accountConfirmationToken;
+
         emailSender.send(requestUser.email(),
                 buildEmail(requestUser.fullName(), link));
         return accountConfirmationToken;
@@ -100,7 +98,7 @@ public class RegistrationService {
     }
 
     private String buildEmail(String name, String link) {
-        return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
+        return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:14px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
                 "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
                 "\n" +
@@ -117,7 +115,7 @@ public class RegistrationService {
                 "                  \n" +
                 "                    </td>\n" +
                 "                    <td style=\"font-size:28px;line-height:1.315789474;Margin-top:4px;padding-left:10px\">\n" +
-                "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">Confirme seu email.</span>\n" +
+                "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">Confirme o seu email.</span>\n" +
                 "                    </td>\n" +
                 "                  </tr>\n" +
                 "                </tbody></table>\n" +
@@ -155,7 +153,7 @@ public class RegistrationService {
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Olá " + name + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Obrigado por registra-se. Por favor, clique no link abaixo para ativar sua conta: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Activate Now</a> </p></blockquote>\n O link vai expirar em 20 minutos. <p>Te vejo em breve!</p>" +
+                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Olá, " + name + "!" + ",</p><p style=\"Margin:0 0 20px 0;font-size:14px;line-height:25px;color:#0b0c0c\"> Obrigado por cadastrar-se no site. Por favor, clique no link abaixo para ativar sua conta: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Ativar conta agora</a> </p></blockquote>\n O link vai expirar em 20 minutos. <p>Te vejo em breve!</p>" +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +

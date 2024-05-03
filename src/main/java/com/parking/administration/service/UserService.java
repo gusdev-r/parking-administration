@@ -5,7 +5,6 @@ import com.parking.administration.domain.User;
 import com.parking.administration.domain.Vehicle;
 import com.parking.administration.domain.email.EmailService;
 import com.parking.administration.domain.token.ConfirmationToken;
-import com.parking.administration.dto.AuthenticationResponse;
 import com.parking.administration.dto.request.VehiclePutRequest;
 import com.parking.administration.dto.response.VehicleResponse;
 import com.parking.administration.infra.exception.BadRequestException;
@@ -13,7 +12,6 @@ import com.parking.administration.infra.exception.PasswordNotValidException;
 import com.parking.administration.infra.exception.UserNotFoundException;
 import com.parking.administration.infra.exception.VehicleNotFoundException;
 import com.parking.administration.infra.exception.enums.ErrorCode;
-import com.parking.administration.jwt.JwtService;
 import com.parking.administration.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -35,7 +33,6 @@ public class UserService {
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailService emailService;
     private final ModelMapper modelMapper;
-    private final JwtService jwtService;
 
     public User findUserById(Long id) {
         return userRepository.findById(id)
@@ -111,8 +108,6 @@ public class UserService {
                 LocalDateTime.now().plusMinutes(20)
         );
         confirmationTokenService.saveConfirmationToken(confirmationToken);
-
-        emailService.send(userToRegister.getFullName(), userToRegister.getEmail());
 
        return randomTokenToConfirm;
     }

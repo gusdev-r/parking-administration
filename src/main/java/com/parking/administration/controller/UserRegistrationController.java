@@ -17,11 +17,11 @@ public class UserRegistrationController {
     private final RegistrationService registrationService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody UserRegistrationRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(registrationService.register(request));
+    public String register(@Valid @RequestBody UserRegistrationRequest request) {
+        return registrationService.register(request);
     }
-    @GetMapping("/confirm/token")
-    public ResponseEntity<String> confirmToken(@RequestParam("token") String token) {
-        return ResponseEntity.status(HttpStatus.OK).body(registrationService.confirmToken(token));
+    @GetMapping(path = "/confirm/token")
+    public String confirmToken(@RequestParam("token") String token) {
+        return registrationService.confirmToken(token);
     }
 }
