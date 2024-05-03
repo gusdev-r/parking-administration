@@ -71,6 +71,40 @@ git clone https://github.com/gusdev-r/parking-administration.git
 ```
 mvn spring-boot:run
 ```
+<h2>
+  Configurando a base do envio de email
+</h2>
+<div>
+  <p>
+    Lembrando que para essa configuração, a opção de envio de email precisar ser realizada 
+  pelo host smtp.gmail.com na porta de acesso 587. Siga os passos a seguir para configurar
+  o username e a password das propriedades.
+  </p>
+<h3>
+  Verifique se sua conta do Google
+</h3>
+<p>
+  É necessário que sua conta possua autenticação de dois fatores habilitada para que seja
+  possível gerar as senhas de apps.
+</p>
+  <p>
+    Para habilitar clique em: <b>Gerenciar sua conta do Google -> Como você faz login no Google -> 
+    Verificação em duas etapas.</b>
+  </p>
+  <p>
+    Se já está habilitada, pesquise por <b>Senhas de app.</b>
+    Logo em seguida é só digitar um nome para a senha e guardar de forma segura (recomendo o uso de variáveis 
+    de ambietente caso compartilhe o seu código).
+  </p>
+</div>
+
+<h2>
+  Como enviar requisições
+</h2>
+<p>
+  O sistema está configurado na porta 8082, atente-se caso execute em sua máquina para que nenhuma outra 
+  porta esteja configurada na especificada.
+</p>
 
 <h3>Licença utilizada no projeto</h3>
 - Este projeto está sob a licença MIT, garantindo liberdade e permissão de uso. 📜🔒
