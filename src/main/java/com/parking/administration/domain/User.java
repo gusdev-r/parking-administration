@@ -1,6 +1,6 @@
 package com.parking.administration.domain;
 
-import com.parking.administration.customValidator.annotations.ValidateCPFAndCNPJ;
+import com.parking.administration.annotations.ValidateCPFAndCNPJ;
 import com.parking.administration.domain.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
@@ -59,9 +59,7 @@ public class User implements UserDetails {
     @Column(name = "created_at", nullable = false, length = 70)
     private LocalDateTime createdAt;
 
-    //TODO Set the updatedAt when edit some value by the method updateVehicleAttributes or the methods at the userController
-
-    @Column(name = "updated_at", nullable = false, length = 70)
+    @Column(name = "updated_at", length = 70)
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "user")
