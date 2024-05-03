@@ -44,12 +44,10 @@ public class WebSecurityConfig {
                                 "/configuration/security",
                                 "/swagger-ui/**",
                                 "/webjars/**",
-                                "/swagger-ui.html"
-                        ).permitAll()
+                                "/swagger-ui.html").permitAll()
                 .requestMatchers("/v1/api/registration/**").permitAll()
                 .requestMatchers("/vi/api/demo-controller").permitAll()
-
-                .requestMatchers(HttpMethod.POST, "v1/api/auth/**").hasAnyAuthority(ADMIN.name(), USER.name())
+                .requestMatchers("v1/api/auth/**").permitAll()
 
                 .requestMatchers(HttpMethod.GET, ADMIN_USER_ENDPOINT).hasAnyAuthority(ADMIN.name(), USER.name())
                 .requestMatchers(HttpMethod.POST, ADMIN_USER_ENDPOINT).hasAnyAuthority(ADMIN.name(), USER.name())
