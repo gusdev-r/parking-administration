@@ -1,4 +1,4 @@
-package com.parking.administration.customValidator.annotations;
+package com.parking.administration.annotations;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

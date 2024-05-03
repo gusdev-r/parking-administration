@@ -1,4 +1,4 @@
-package com.parking.administration.customValidator.annotations;
+package com.parking.administration.annotations;
 
 import com.parking.administration.infra.exception.DocumentNotValidException;
 import com.parking.administration.infra.exception.enums.ErrorCode;
