@@ -1,0 +1,27 @@
+server:
+  port: 8082
+
+spring:
+  profiles:
+    active: dev
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_ORIGIN}
+    password: ${EMAIL_PASSWORD}
+
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: "*"
+          auth: true
+          starttls:
+            enable: true
+
+application:
+  security:
+    jwt:
+      secret-key: ${SECRET_KEY_JWT}
+      expiration: 86400000
