@@ -1,6 +1,6 @@
 package com.parking.administration.domain.token;
 
-import com.parking.administration.domain.User;
+import com.parking.administration.domain.core.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

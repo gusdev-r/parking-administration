@@ -1,12 +1,11 @@
-package com.parking.administration.auth;
+package com.parking.administration.service;
 
 
-import com.parking.administration.domain.User;
+import com.parking.administration.domain.core.User;
 import com.parking.administration.dto.AuthenticationRequest;
 import com.parking.administration.dto.AuthenticationResponse;
 import com.parking.administration.infra.exception.EmailException;
 import com.parking.administration.infra.exception.enums.ErrorCode;
-import com.parking.administration.jwt.JwtService;
 import com.parking.administration.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,20 +22,16 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticateUser(AuthenticationRequest request) {
 
-// todo add a try and catch or use the exception handler configured
-
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new EmailException(ErrorCode.EM0004.getMessage(), ErrorCode.EM0004.getCode()));
 
-        var jwtToken = jwtService.generateToken(user);
-
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.email(),
-                        request.password()
+                    new UsernamePasswordAuthenticationToken(
+                            request.email(),
+                            request.password()
                 )
         );
-
+        var jwtToken = jwtService.generateToekn(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
