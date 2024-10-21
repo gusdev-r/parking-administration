@@ -1,25 +1,27 @@
 package com.parking.administration.demo.service;
 
 import com.parking.administration.commons.ParkingSpaceUtils;
-import com.parking.administration.demo.controller.ParkingSpaceController;
-import com.parking.administration.demo.domain.ParkingSpace;
-import com.parking.administration.demo.infra.exception.BadRequestException;
-import com.parking.administration.demo.infra.exception.ParkingSpaceNotFoundException;
-import com.parking.administration.demo.repository.ParkingSpaceRepository;
+import com.parking.administration.controller.ParkingSpaceController;
+import com.parking.administration.domain.core.ParkingSpace;
+import com.parking.administration.infra.exception.BadRequestException;
+import com.parking.administration.infra.exception.ParkingSpaceNotFoundException;
+import com.parking.administration.repository.ParkingSpaceRepository;
+import com.parking.administration.service.ParkingSpaceService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -39,14 +41,12 @@ class ParkingSpaceServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
         parkingSpaceList = parkingSpaceUtils.newParkingSpaceList();
-
     }
     @Test
     @DisplayName("save(), creates a new parking space")
     @Order(1)
-    void saveCase() throws BadRequestException {
+    void createParkingSpaceCase() throws BadRequestException {
         var parkingSpaceToSave = parkingSpaceUtils.parkingSpaceToSave();
 
 //        when(parkingSpaceRepository.save(parkingSpaceToSave)).thenReturn(parkingSpaceToSave);
@@ -63,20 +63,22 @@ class ParkingSpaceServiceTest {
     void findByIdCase1() throws ParkingSpaceNotFoundException {
 
         var id = 156L;
-        var parkingSpaceExpected = parkingSpaceList.get(0);
+        ParkingSpace parkingSpaceExpected = new ParkingSpace();
 
-        when(parkingSpaceRepository.findById(id)).thenReturn(Optional.of(parkingSpaceExpected));
-        var parkingSpaceOptional = parkingSpaceService.findById(id);
-        Assertions.assertThat(parkingSpaceOptional).contains(parkingSpaceExpected);
+        when(parkingSpaceRepository.findById(ArgumentMatchers.anyLong()))
+                .thenReturn(Optional.of(parkingSpaceExpected));
+        var parkingSpaceResponse = parkingSpaceService.findById(id);
 
-        assertNotNull(parkingSpaceOptional.get().getCondominiumApartment());
-        assertNotNull(parkingSpaceOptional.get().getCondominiumBlock());
-        assertNotNull(parkingSpaceOptional.get().getVehicleBrand());
-        assertNotNull(parkingSpaceOptional.get().getVehicleColor());
-        assertNotNull(parkingSpaceOptional.get().getVehicleSpaceNumber());
-        assertNotNull(parkingSpaceOptional.get().getVehicleModel());
-        assertNotNull(parkingSpaceOptional.get().getResponsibleVehicleName());
-        assertNotNull(parkingSpaceOptional.get().getVehicleLicensePlateNumber());
+        Assertions.assertThat(parkingSpaceResponse).isEqualTo(parkingSpaceExpected);
+
+        assertNotNull(parkingSpaceResponse.condominiumApartment());
+        assertNotNull(parkingSpaceResponse.condominiumBlock());
+        assertNotNull(parkingSpaceResponse.vehicleBrand());
+        assertNotNull(parkingSpaceResponse.vehicleColor());
+        assertNotNull(parkingSpaceResponse.vehicleSpaceNumber());
+        assertNotNull(parkingSpaceResponse.vehicleModel());
+        assertNotNull(parkingSpaceResponse.responsibleVehicleName());
+        assertNotNull(parkingSpaceResponse.vehicleLicensePlateNumber());
     }
 
     @Test
@@ -102,7 +104,7 @@ class ParkingSpaceServiceTest {
 
         doNothing().when(parkingSpaceRepository).delete(parkingSpaceExpected);
 
-        Assertions.assertThatNoException().isThrownBy(() -> parkingSpaceService.delete(parkingSpaceExpected));
+        Assertions.assertThatNoException().isThrownBy(() -> parkingSpaceService.delete(id));
 
     }
     @Test

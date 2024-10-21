@@ -1,7 +1,7 @@
 package com.parking.administration.commons;
 
-import com.parking.administration.demo.domain.ParkingSpace;
-import com.parking.administration.demo.dto.request.ParkingSpacePutRequest;
+import com.parking.administration.domain.core.ParkingSpace;
+import com.parking.administration.dto.request.ParkingSpacePutRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
