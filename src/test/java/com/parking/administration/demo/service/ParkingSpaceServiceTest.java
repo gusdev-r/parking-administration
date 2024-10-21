@@ -2,8 +2,7 @@ package com.parking.administration.demo.service;
 
 import com.parking.administration.commons.ParkingSpaceUtils;
 import com.parking.administration.controller.ParkingSpaceController;
-import com.parking.administration.domain.ParkingSpace;
-import com.parking.administration.dto.response.ParkingSpaceResponse;
+import com.parking.administration.domain.core.ParkingSpace;
 import com.parking.administration.infra.exception.BadRequestException;
 import com.parking.administration.infra.exception.ParkingSpaceNotFoundException;
 import com.parking.administration.repository.ParkingSpaceRepository;

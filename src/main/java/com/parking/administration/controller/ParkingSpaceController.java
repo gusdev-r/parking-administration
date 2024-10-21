@@ -14,10 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.parking.administration.util.Constants.BASE_URL;
 import static com.parking.administration.util.Utility.LOGGER;
 
 @RestController
-@RequestMapping(path = {"/v1/api/moder/ps/", "/v1/api/moder/ps"})
+@RequestMapping(path = BASE_URL + "/moder/ps/")
 @RequiredArgsConstructor
 public class ParkingSpaceController {
 

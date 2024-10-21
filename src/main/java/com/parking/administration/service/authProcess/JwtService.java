@@ -1,12 +1,18 @@
-package com.parking.administration.service;
+package com.parking.administration.service.authProcess;
 
+import com.parking.administration.domain.core.User;
+import com.parking.administration.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
@@ -14,6 +20,9 @@ import java.util.function.Function;
 public class JwtService {
 
     private final GetSignInKeyService getSignInKey;
+    private final UserRepository userRepo;
+    @Value("${application.security.jwt.expiration}")
+    private long jwtExpiration;
 
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
@@ -51,5 +60,31 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public String generateToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails);
+    }
+
+    public String generateToken(
+            Map<String, Object> extraClaims,
+            UserDetails userDetails
+    ) {
+        return buildToken(extraClaims, userDetails, jwtExpiration);
+    }
+
+    public String buildToken(Map<String, Object> extraClaims,
+                             UserDetails userDetails, long jwtExpiration) {
+        User user = (User) userDetails;
+        extraClaims.put("username", user.getUsername());
+
+        return Jwts
+                .builder()
+                .setClaims(extraClaims)
+                .setSubject(((User) userDetails).getEmail())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .signWith(getSignInKey.execute(), SignatureAlgorithm.HS256)
+                .compact();
     }
 }

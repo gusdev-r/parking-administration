@@ -1,22 +1,20 @@
 package com.parking.administration.service;
 
-import com.parking.administration.domain.User;
-import com.parking.administration.domain.email.EmailSender;
+import com.parking.administration.domain.core.User;
 import com.parking.administration.domain.enums.UserRole;
-import com.parking.administration.domain.token.ConfirmationToken;
+import com.parking.administration.domain.token.Token;
 import com.parking.administration.dto.request.UserRegistrationRequest;
 import com.parking.administration.infra.exception.EmailException;
-import com.parking.administration.infra.exception.EmailNotValidException;
-import com.parking.administration.infra.exception.PasswordNotValidException;
 import com.parking.administration.infra.exception.TokenException;
 import com.parking.administration.infra.exception.enums.ErrorCode;
-import com.parking.administration.jwt.JwtService;
+import com.parking.administration.service.authProcess.ConfirmationTokenService;
+import com.parking.administration.util.Constants;
+import com.parking.administration.util.Utility;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.regex.Pattern;
 
 import static com.parking.administration.util.Utility.LOGGER;
 
@@ -25,31 +23,12 @@ import static com.parking.administration.util.Utility.LOGGER;
 public class RegistrationService {
 
     private final UserService userService;
-    private final EmailSender emailSender;
     private final ConfirmationTokenService confirmationTokenService;
+    private final Utility utils;
 
-    private JwtService jwtService;
-
-    private boolean verifyEmail(String email) {
-        String regexEmail = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$";
-        return Pattern.matches(regexEmail, email);
-    }
-    private boolean verifyPassword(String password) {
-        String regexPassword = "^(?=.*[!@#$%^&*()-+=])(?=\\S+$).{8,}$";
-        return Pattern.matches(regexPassword, password);
-    }
-
-    public String register(UserRegistrationRequest requestUser) {
-
-        if (!verifyEmail(requestUser.email())) {
-            LOGGER.warn("The email format is not valid - RegistrationService");
-            throw new EmailNotValidException(ErrorCode.EM0003.getMessage(), ErrorCode.EM0003.getCode());
-        }
-
-        if (!verifyPassword(requestUser.password())) {
-            LOGGER.warn("The password format is not valid - RegistrationService");
-            throw new PasswordNotValidException(ErrorCode.ON0005.getMessage(), ErrorCode.ON0005.getCode());
-        }
+    public void register(UserRegistrationRequest requestUser) {
+        utils.verifyEmail(requestUser.email());
+        utils.verifyPassword(requestUser.password());
 
         User user = User.builder()
                 .userRole(UserRole.USER)
@@ -58,43 +37,32 @@ public class RegistrationService {
                 .password(requestUser.password())
                 .document(requestUser.document())
                 .username(requestUser.username())
+                .locked(false)
+                .enabled(false)
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        String accountConfirmationToken = userService.signUpUser(user);
+        String confirmTkn = userService.signUpUser(user);
 
-        String link = "http://localhost:8082/v1/api/registration/confirm/token?token=" + accountConfirmationToken;
-
-        emailSender.send(requestUser.email(),
-                buildEmail(requestUser.fullName(), link));
-        return accountConfirmationToken;
+        String link = Constants.TOKEN_URL + confirmTkn;
+        utils.sendEmail(requestUser.email(), "Confirmação de conta!", buildEmail(requestUser.fullName(), link));
     }
 
     @Transactional
-    public String confirmToken(String token) {
-
-        ConfirmationToken confirmationToken = confirmationTokenService
-                .getToken(token)
-                .orElseThrow(() -> new TokenException(ErrorCode.ON0004.getMessage(), ErrorCode.ON0004.getCode()));
-
+    public void confirmToken(String token) {
+        Token confirmationToken = confirmationTokenService.getToken(token).orElseThrow(() ->
+                new TokenException(ErrorCode.ON0004.getMessage(), ErrorCode.ON0004.getCode()));
         if (confirmationToken.getConfirmedAt() != null) {
-            LOGGER.warn("The e-mail has already been confirmed - RegistrationService");
             throw new EmailException(ErrorCode.EM0001.getMessage(), ErrorCode.EM0001.getCode());
         }
-
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
-
         if (expiredAt.isBefore(LocalDateTime.now())) {
-            LOGGER.warn("Token already expired - RegistrationService");
             throw new TokenException(ErrorCode.EM0001.getMessage(), ErrorCode.EM0001.getCode());
         }
         confirmationTokenService.setConfirmedAt(token);
         LOGGER.info("Email confirmed by token - RegistrationService");
         userService.enableUser(
                 confirmationToken.getUser().getEmail());
-        LOGGER.info("Enabling the user - Registration Service");
-
-        return "The email was confirmed successfully, now authenticate your account!";
     }
 
     private String buildEmail(String name, String link) {

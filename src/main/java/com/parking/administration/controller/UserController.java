@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.parking.administration.util.Constants.BASE_URL;
+
 @RestController
-@RequestMapping(path = {"/v1/api/user", "/v1/api/user/"})
+@RequestMapping(path = BASE_URL + "/users/")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -30,5 +32,9 @@ public class UserController {
     public void updateVehicle(@RequestBody VehiclePutRequest vehiclePutRequest,
                               @PathVariable Long userId , @PathVariable Long vehicleId) {
         userService.updateVehicleAttributes(vehiclePutRequest, vehicleId, userId);
+    }
+    @GetMapping( "hello")
+    public ResponseEntity<String> helloWorldUser () {
+        return ResponseEntity.status(HttpStatus.OK).body("Hello World, user!");
     }
 }

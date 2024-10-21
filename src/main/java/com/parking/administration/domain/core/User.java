@@ -1,21 +1,22 @@
-package com.parking.administration.domain;
+package com.parking.administration.domain.core;
 
 import com.parking.administration.annotations.ValidateCPFAndCNPJ;
 import com.parking.administration.domain.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
-@SuperBuilder
+@Builder
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 @Entity
 @Table(name = "tb_user")
 public class User implements UserDetails {
@@ -38,7 +39,7 @@ public class User implements UserDetails {
     @Column(name = "email", nullable = false, length = 70)
     private String email;
 
-    @Column(name = "password", nullable = false, length = 15)
+    @Column(name = "password", nullable = false)
     private String password;
 
     @ValidateCPFAndCNPJ
@@ -68,24 +69,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<ParkingSpace> parkingSpaceList;
 
-
-    public User(String fullName, String email, String password, String document, String username, UserRole userRole,
-                Boolean locked, Boolean enabled, LocalDateTime createdAt, LocalDateTime updatedAt,
-                List<Vehicle> vehicleList, List<ParkingSpace> parkingSpaceList) {
-        this.fullName = fullName;
-        this.email = email;
-        this.password = password;
-        this.document = document;
-        this.username = username;
-        this.userRole = userRole;
-        this.locked = false;
-        this.enabled = false;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.vehicleList = vehicleList;
-        this.parkingSpaceList = parkingSpaceList;
-    }
-
    public User(String fullName, String email, String password, String document, String username) {
        this.userRole = null;
        this.fullName = fullName;
@@ -93,28 +76,16 @@ public class User implements UserDetails {
        this.password = password;
        this.document = document;
        this.username = username;
+
    }
-
-    public User() {
-
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return userRole.getAuthorities();
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() { //search the configuration at the system of this implementation
+    public boolean isAccountNonExpired() {
         return true;
     }
 
@@ -131,18 +102,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(fullName, user.fullName) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(document, user.document) && Objects.equals(username, user.username) && userRole == user.userRole && Objects.equals(locked, user.locked) && Objects.equals(enabled, user.enabled) && Objects.equals(createdAt, user.createdAt) && Objects.equals(updatedAt, user.updatedAt) && Objects.equals(vehicleList, user.vehicleList) && Objects.equals(parkingSpaceList, user.parkingSpaceList);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, fullName, email, password, document, username, userRole, locked, enabled, createdAt, updatedAt, vehicleList, parkingSpaceList);
     }
 }

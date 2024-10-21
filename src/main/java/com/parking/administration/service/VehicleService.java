@@ -1,6 +1,6 @@
 package com.parking.administration.service;
 
-import com.parking.administration.domain.Vehicle;
+import com.parking.administration.domain.core.Vehicle;
 import com.parking.administration.dto.response.VehicleResponse;
 import com.parking.administration.infra.exception.VehicleNotFoundException;
 import com.parking.administration.infra.exception.enums.ErrorCode;

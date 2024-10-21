@@ -3,22 +3,21 @@ package com.parking.administration.controller;
 import com.parking.administration.dto.request.UserRegistrationRequest;
 import com.parking.administration.service.RegistrationService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static com.parking.administration.util.Constants.BASE_URL;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = {"/v1/api/registration/", "/v1/api/registration"})
-public class UserRegistrationController {
+@RequestMapping(path = BASE_URL + "/public/registration/")
+public class RegistrationController {
 
     private final RegistrationService registrationService;
 
     @PostMapping("/register")
-    public String register(@Valid @RequestBody UserRegistrationRequest request) {
-        return registrationService.register(request);
+    public void register(@Valid @RequestBody UserRegistrationRequest request) {
+        registrationService.register(request);
     }
     @GetMapping(path = "/confirm/token")
     public void confirmToken(@RequestParam("token") String token) {

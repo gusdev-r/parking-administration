@@ -1,8 +1,8 @@
 package com.parking.administration.commons;
 
-import com.parking.administration.domain.ParkingSpace;
-import com.parking.administration.domain.User;
-import com.parking.administration.domain.Vehicle;
+import com.parking.administration.domain.core.ParkingSpace;
+import com.parking.administration.domain.core.User;
+import com.parking.administration.domain.core.Vehicle;
 import com.parking.administration.dto.request.VehiclePutRequest;
 
 import java.util.ArrayList;

@@ -4,7 +4,6 @@ import com.parking.administration.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,10 +12,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.parking.administration.domain.enums.Permission.*;
 import static com.parking.administration.domain.enums.UserRole.ADMIN;
 import static com.parking.administration.domain.enums.UserRole.USER;
-import static com.parking.administration.util.Constants.*;
+import static com.parking.administration.util.Constants.BASE_URL;
 
 @RequiredArgsConstructor
 @Configuration
@@ -25,6 +23,8 @@ public class WebSecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final String USER_ROLE = "ROLE_" + USER.name();
+    private final String ADMIN_ROLE = "ROLE_" + ADMIN.name();
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -32,40 +32,11 @@ public class WebSecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(AbstractHttpConfigurer::disable);
 
-        http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/v1/auth/**",
-                                "/v2/api-docs",
-                                "/v3/api-docs",
-                                "/v3/api-docs/**",
-                                "/swagger-resources",
-                                "/swagger-resources/**",
-                                "/configuration/ui",
-                                "/configuration/security",
-                                "/swagger-ui/**",
-                                "/webjars/**",
-                                "/swagger-ui.html").permitAll()
-                .requestMatchers("/v1/api/registration/**").permitAll()
-                .requestMatchers("/vi/api/demo-controller").permitAll()
-                .requestMatchers("v1/api/auth/**").permitAll()
-
-                .requestMatchers(HttpMethod.GET, ADMIN_USER_ENDPOINT).hasAnyAuthority(ADMIN.name(), USER.name())
-                .requestMatchers(HttpMethod.POST, ADMIN_USER_ENDPOINT).hasAnyAuthority(ADMIN.name(), USER.name())
-                .requestMatchers(HttpMethod.PUT, ADMIN_USER_ENDPOINT).hasAnyAuthority(ADMIN.name(), USER.name())
-                .requestMatchers(HttpMethod.DELETE, ADMIN_USER_ENDPOINT).hasAnyAuthority(ADMIN.name(), USER.name())
-
-                .requestMatchers(HttpMethod.GET, ADMIN_PARKING_SPACE_ENDPOINT).hasRole(ADMIN_READ.name())
-                .requestMatchers(HttpMethod.POST, ADMIN_PARKING_SPACE_ENDPOINT).hasRole(ADMIN_CREATE.name())
-                .requestMatchers(HttpMethod.PUT, ADMIN_PARKING_SPACE_ENDPOINT).hasRole(ADMIN_UPDATE.name())
-                .requestMatchers(HttpMethod.DELETE, ADMIN_PARKING_SPACE_ENDPOINT).hasRole(ADMIN_DELETE.name())
-
-                .requestMatchers(HttpMethod.GET, ADMIN_VEHICLE_ENDPOINT).hasRole(ADMIN_READ.name())
-                .requestMatchers(HttpMethod.POST, ADMIN_VEHICLE_ENDPOINT).hasRole(ADMIN_CREATE.name())
-                .requestMatchers(HttpMethod.PUT, ADMIN_VEHICLE_ENDPOINT).hasRole(ADMIN_UPDATE.name())
-                .requestMatchers(HttpMethod.DELETE, ADMIN_VEHICLE_ENDPOINT).hasRole(ADMIN_DELETE.name())
-
-                .anyRequest().authenticated());
-
+        http.authorizeHttpRequests(auth -> {
+            auth.requestMatchers(BASE_URL + "/public/**").permitAll();
+            auth.requestMatchers(BASE_URL + "/users/**").hasAnyAuthority(USER_ROLE, ADMIN_ROLE);
+            auth.anyRequest().authenticated();
+        });
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
