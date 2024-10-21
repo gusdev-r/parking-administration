@@ -1,10 +1,9 @@
 
 package com.parking.administration.service;
 
-import com.parking.administration.domain.User;
-import com.parking.administration.domain.Vehicle;
-import com.parking.administration.domain.email.EmailService;
-import com.parking.administration.domain.token.ConfirmationToken;
+import com.parking.administration.domain.core.User;
+import com.parking.administration.domain.core.Vehicle;
+import com.parking.administration.domain.token.Token;
 import com.parking.administration.dto.request.VehiclePutRequest;
 import com.parking.administration.dto.response.VehicleResponse;
 import com.parking.administration.infra.exception.BadRequestException;
@@ -13,16 +12,17 @@ import com.parking.administration.infra.exception.UserNotFoundException;
 import com.parking.administration.infra.exception.VehicleNotFoundException;
 import com.parking.administration.infra.exception.enums.ErrorCode;
 import com.parking.administration.repository.UserRepository;
+import com.parking.administration.service.authProcess.ConfirmationTokenService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.parking.administration.util.Utility.LOGGER;
 
@@ -31,7 +31,6 @@ import static com.parking.administration.util.Utility.LOGGER;
 public class UserService {
     private final UserRepository userRepository;
     private final ConfirmationTokenService confirmationTokenService;
-    private final EmailService emailService;
     private final ModelMapper modelMapper;
 
     public User findUserById(Long id) {
@@ -82,36 +81,32 @@ public class UserService {
     }
 
     public String signUpUser(User userToRegister) {
-       boolean userExists = userRepository.findByEmail(userToRegister.getEmail()).isPresent();
-       if (userExists) {
-           LOGGER.error("The email was already taken - UserDetailsService");
-           throw new BadRequestException(ErrorCode.EM0002.getMessage(), ErrorCode.EM0002.getCode());
-       }
-
-       BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-       String encodedPassword = bCryptPasswordEncoder.encode(userToRegister.getPassword());
-
-       if (!bCryptPasswordEncoder.matches(userToRegister.getPassword(), encodedPassword)) {
-           LOGGER.error("The encoded password does not match - UserDetailsService");
-           throw new PasswordNotValidException(ErrorCode.EM0003.getMessage(), ErrorCode.EM0003.getCode());
+        boolean userExists = userRepository.findByEmail(userToRegister.getEmail()).isPresent();
+        if (userExists) {
+            LOGGER.error("The email was already taken - UserDetailsService");
+            throw new BadRequestException(ErrorCode.EM0002.getMessage(), ErrorCode.EM0002.getCode());
         }
 
-       userToRegister.setPassword(encodedPassword);
-       userRepository.save(userToRegister);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String encodedPassword = encoder.encode(userToRegister.getPassword());
+        LOGGER.info(encodedPassword);
+        userToRegister.setPassword(encodedPassword);
+        userRepository.save(userToRegister);
 
-       String randomTokenToConfirm = UUID.randomUUID().toString();
-
-        ConfirmationToken confirmationToken = new ConfirmationToken(
-                randomTokenToConfirm,
+        SecureRandom random = new SecureRandom();
+        String codeTkn = String.valueOf(100000 + random.nextInt(900000));
+        Token token = new Token(
+                codeTkn,
                 userToRegister,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(20)
         );
-        confirmationTokenService.saveConfirmationToken(confirmationToken);
+        confirmationTokenService.saveConfirmationToken(token);
 
-       return randomTokenToConfirm;
+        return codeTkn;
     }
-    public int enableUser(String email) {
-        return userRepository.enableUser(email);
+
+    public void enableUser(String email) {
+        userRepository.updateConfirmedAt(email, LocalDateTime.now());
     }
 }

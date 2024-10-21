@@ -2,7 +2,7 @@ package com.parking.administration.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.parking.administration.domain.ParkingSpace;
+import com.parking.administration.domain.core.ParkingSpace;
 
 @Repository
 public interface ParkingSpaceRepository extends JpaRepository<ParkingSpace, Long> {

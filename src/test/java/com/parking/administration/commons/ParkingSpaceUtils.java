@@ -1,6 +1,6 @@
 package com.parking.administration.commons;
 
-import com.parking.administration.domain.ParkingSpace;
+import com.parking.administration.domain.core.ParkingSpace;
 import com.parking.administration.dto.request.ParkingSpacePutRequest;
 import org.springframework.stereotype.Component;
 

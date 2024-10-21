@@ -15,7 +15,8 @@
 	<description>This is a project involving the administration of parking spaces in a parking lot. </description>
 	<properties>
 		<java.version>17</java.version>
-		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
 	<dependencies>
@@ -37,6 +38,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>java-dotenv</artifactId>
+			<version>5.2.2</version>
 		</dependency>
 
 		<dependency>
@@ -92,9 +99,10 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.32</version>
+			<version>1.18.34</version>
 			<scope>provided</scope>
 		</dependency>
+
 
 		<dependency>
 			<groupId>org.mapstruct</groupId>
@@ -123,22 +131,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
 				<configuration>
-					<source>1.8</source> <!-- depending on your project -->
-					<target>1.8</target> <!-- depending on your project -->
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.mapstruct</groupId>
-							<artifactId>mapstruct-processor</artifactId>
-							<version>${org.mapstruct.version}</version>
-						</path>
-						<!-- other annotation processors -->
-					</annotationProcessorPaths>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>

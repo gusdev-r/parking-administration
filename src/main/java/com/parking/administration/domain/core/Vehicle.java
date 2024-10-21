@@ -1,4 +1,4 @@
-package com.parking.administration.domain;
+package com.parking.administration.domain.core;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,7 +29,7 @@ public class Vehicle {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToOne(mappedBy = "vehicle")

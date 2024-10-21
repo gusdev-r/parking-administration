@@ -1,14 +1,14 @@
 package com.parking.administration.demo.service;
 
 import com.parking.administration.commons.UserUtils;
-import com.parking.administration.domain.User;
-import com.parking.administration.domain.Vehicle;
+import com.parking.administration.domain.core.User;
+import com.parking.administration.domain.core.Vehicle;
 import com.parking.administration.dto.request.VehiclePutRequest;
 import com.parking.administration.infra.exception.BadRequestException;
 import com.parking.administration.infra.exception.UserNotFoundException;
 import com.parking.administration.infra.exception.VehicleNotFoundException;
 import com.parking.administration.repository.UserRepository;
-import com.parking.administration.service.ConfirmationTokenService;
+import com.parking.administration.service.authProcess.ConfirmationTokenService;
 import com.parking.administration.domain.email.EmailService;
 import com.parking.administration.service.UserService;
 import org.assertj.core.api.Assertions;

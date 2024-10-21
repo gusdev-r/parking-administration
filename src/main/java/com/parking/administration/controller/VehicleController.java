@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.parking.administration.util.Constants.BASE_URL;
 import static com.parking.administration.util.Utility.LOGGER;
 
-@RequestMapping(path = "/v1/api/vehicle")
+@RequestMapping(path = BASE_URL + "/users/vehicle")
 @RequiredArgsConstructor
 @RestController
 public class VehicleController {

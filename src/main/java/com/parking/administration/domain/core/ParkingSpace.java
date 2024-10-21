@@ -1,17 +1,14 @@
-package com.parking.administration.domain;
+package com.parking.administration.domain.core;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@SuperBuilder
+@Builder
 @Entity
 @Getter
 @Setter
@@ -54,6 +51,6 @@ public class ParkingSpace implements Serializable {
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
     @ManyToOne
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "user_id")
     private User user;
 }

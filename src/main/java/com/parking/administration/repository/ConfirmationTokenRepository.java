@@ -1,6 +1,6 @@
 package com.parking.administration.repository;
 
-import com.parking.administration.domain.token.ConfirmationToken;
+import com.parking.administration.domain.token.Token;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,13 +13,13 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationToken, Long> {
+public interface ConfirmationTokenRepository extends JpaRepository<Token, Long> {
 
-    Optional<ConfirmationToken> findByToken(String token);
+    Optional<Token> findByToken(String token);
 
     @Transactional
     @Modifying
-    @Query("UPDATE ConfirmationToken c " +
+    @Query("UPDATE Token c " +
             "SET c.confirmedAt = ?2 " +
             "WHERE c.token = ?1")
 

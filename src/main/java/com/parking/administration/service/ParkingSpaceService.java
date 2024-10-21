@@ -1,8 +1,8 @@
 package com.parking.administration.service;
 
-import com.parking.administration.domain.ParkingSpace;
-import com.parking.administration.domain.User;
-import com.parking.administration.domain.Vehicle;
+import com.parking.administration.domain.core.ParkingSpace;
+import com.parking.administration.domain.core.User;
+import com.parking.administration.domain.core.Vehicle;
 import com.parking.administration.dto.request.ParkingSpacePutRequest;
 import com.parking.administration.dto.request.ParkingSpaceRequestPost;
 import com.parking.administration.dto.response.ParkingSpaceResponse;
@@ -16,7 +16,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

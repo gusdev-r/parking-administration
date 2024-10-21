@@ -1,8 +1,10 @@
 package com.parking.administration.infra.exception.enums;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
+@NoArgsConstructor
 public enum ErrorCode {
 
     ON0001("This was a bad request, check the data and try again.",
