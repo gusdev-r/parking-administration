@@ -1,7 +1,7 @@
 package com.parking.administration.service.authProcess;
 
 import com.parking.administration.domain.token.Token;
-import com.parking.administration.repository.ConfirmationTokenRepository;
+import com.parking.administration.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 public class ConfirmationTokenService {
 
-    private final ConfirmationTokenRepository tokenRepository;
+    private final TokenRepository tokenRepository;
 
     public void saveConfirmationToken(Token token) {
         tokenRepository.save(token);

@@ -2,13 +2,11 @@ package com.parking.administration.domain.token;
 
 import com.parking.administration.domain.core.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,13 +28,15 @@ public class Token {
     private Long id;
     @Column(nullable = false)
     private String token;
-    @Column(nullable = false)
+    private boolean revoked;
+    private boolean expired;
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    @Column(nullable = false)
+    @Column(name = "expires_at")
     private LocalDateTime expiresAt;
     private LocalDateTime confirmedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
