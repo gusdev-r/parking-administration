@@ -5,8 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.parking.administration.util.Constants.BASE_URL;
+
 @RestController
-@RequestMapping("/vi/api/demo-controller")
+@RequestMapping(path = BASE_URL + "/public/demo-controller")
 public class DemoController {
 
     @GetMapping

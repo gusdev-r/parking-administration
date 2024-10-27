@@ -1,4 +1,4 @@
-package com.parking.administration.domain;
+package com.parking.administration.dto;
 
 import lombok.NonNull;
 
