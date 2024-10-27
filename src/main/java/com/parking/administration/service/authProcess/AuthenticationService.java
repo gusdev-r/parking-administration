@@ -38,13 +38,13 @@ public class AuthenticationService {
                 )
         );
         User user = userRepo.findByEmail(authDto.email()).orElseThrow(() -> new NullPointerException("User not found"));
-        String jwtToken = jwtService.generateToken(user);
+        String accessTkn = jwtService.generateToken(user);
         revokeAllUserTokens(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
-
+        saveUserToken(user, accessTkn);
+        String refreshTkn = jwtService.generateRefreshToken(user);
         return TokenDto.builder()
-                .accessToken(jwtToken)
-                .refreshToken(refreshToken)
+                .accessToken(accessTkn)
+                .refreshToken(refreshTkn)
                 .build();
     }
 

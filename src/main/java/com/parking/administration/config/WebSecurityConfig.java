@@ -61,7 +61,7 @@ public class WebSecurityConfig {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        http.logout(logout -> logout.logoutSuccessUrl("/api/v1/auth/logout")
+        http.logout(logout -> logout.logoutSuccessUrl("/api/v1/public/auth/logout")
                 .clearAuthentication(true)
                 .addLogoutHandler(logoutHandler)
                 .logoutSuccessHandler((request, response, authentication) -> {

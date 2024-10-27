@@ -85,7 +85,6 @@ public class JwtService {
                              UserDetails userDetails, long jwtExpiration) {
         User user = (User) userDetails;
         extraClaims.put("username", user.getUsername());
-
         return Jwts
                 .builder()
                 .setClaims(extraClaims)

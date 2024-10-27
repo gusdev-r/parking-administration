@@ -30,9 +30,9 @@ public class Token {
     private String token;
     private boolean revoked;
     private boolean expired;
-    @Column(nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    @Column(nullable = false)
+    @Column(name = "expires_at")
     private LocalDateTime expiresAt;
     private LocalDateTime confirmedAt;
 
